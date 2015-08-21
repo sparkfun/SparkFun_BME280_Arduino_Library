@@ -44,6 +44,9 @@ void setup()
 	//Specify chipSelectPin using arduino pin names
 	mySensor.settings.chipSelectPin = 10;
 	
+	//Specify I2C address.  Can be 0x77(default) or 0x76
+	mySensor.settings.I2CAddress = 0x77;
+	
 	//renMode can be:
 	//  0, Sleep mode
 	//  1 or 2, Forced mode
