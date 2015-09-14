@@ -95,7 +95,7 @@ uint8_t BME280::begin()
 	}
 
 	//Reading all compensation data, range 0x88:A1, 0xE1:E7
-
+	
 	calibration.dig_T1 = ((uint16_t)((readRegister(BME280_DIG_T1_MSB_REG) << 8) + readRegister(BME280_DIG_T1_LSB_REG)));
 	calibration.dig_T2 = ((int16_t)((readRegister(BME280_DIG_T2_MSB_REG) << 8) + readRegister(BME280_DIG_T2_LSB_REG)));
 	calibration.dig_T3 = ((int16_t)((readRegister(BME280_DIG_T3_MSB_REG) << 8) + readRegister(BME280_DIG_T3_LSB_REG)));
@@ -123,7 +123,7 @@ uint8_t BME280::begin()
 	//Set the config word
 	dataToWrite = (settings.tStandby << 0x5) & 0xE0;
 	dataToWrite |= (settings.filter << 0x02) & 0x1C;
-	dataToWrite |= (settings.runMode) & 0x01;
+	//dataToWrite |= (settings.runMode) & 0x01;
 	writeRegister(BME280_CONFIG_REG, dataToWrite);
 	
 	//Set ctrl_hum first, then ctrl_meas to activate ctrl_hum
@@ -141,7 +141,7 @@ uint8_t BME280::begin()
 	writeRegister(BME280_CTRL_MEAS_REG, dataToWrite);
 	
 	
-	return 0;
+	return readRegister(0xD0);
 }
 
 //Strictly resets.  Run .begin() afterwards
