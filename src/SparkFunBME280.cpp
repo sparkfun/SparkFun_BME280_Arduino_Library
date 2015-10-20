@@ -8,14 +8,14 @@ https://github.com/sparkfun/BME280_Breakout
 Resources:
 Uses Wire.h for i2c operation
 Uses SPI.h for SPI operation
-Either can be omitted if not used
 
 Development environment specifics:
 Arduino IDE 1.6.4
 Teensy loader 1.23
 
-This code is beerware; if you see me (or any other SparkFun employee) at the
-local, and you've found our code helpful, please buy us a round!
+This code is released under the [MIT License](http://opensource.org/licenses/MIT).
+Please review the LICENSE.md file included with this example. If you have any questions 
+or concerns with licensing, please contact techsupport@sparkfun.com.
 Distributed as-is; no warranty is given.
 ******************************************************************************/
 //See SparkFunBME280.h for additional topology notes.
@@ -57,8 +57,8 @@ BME280::BME280( void )
 //  Configuration section
 //
 //  This uses the stored SensorSettings to start the IMU
-//  Use statements such as "myIMU.settings.commInterface = SPI_MODE;" or
-//  "myIMU.settings.accelEnabled = 1;" to configure before calling .begin();
+//  Use statements such as "mySensor.settings.commInterface = SPI_MODE;" to 
+//  configure before calling .begin();
 //
 //****************************************************************************//
 uint8_t BME280::begin()
@@ -120,10 +120,10 @@ uint8_t BME280::begin()
 	//Set the oversampling control words.
 	//config will only be writeable in sleep mode, so first insure that.
 	writeRegister(BME280_CTRL_MEAS_REG, 0x00);
+	
 	//Set the config word
 	dataToWrite = (settings.tStandby << 0x5) & 0xE0;
 	dataToWrite |= (settings.filter << 0x02) & 0x1C;
-	//dataToWrite |= (settings.runMode) & 0x01;
 	writeRegister(BME280_CONFIG_REG, dataToWrite);
 	
 	//Set ctrl_hum first, then ctrl_meas to activate ctrl_hum
@@ -139,7 +139,6 @@ uint8_t BME280::begin()
 	dataToWrite |= (settings.runMode) & 0x03;
 	//Load the byte
 	writeRegister(BME280_CTRL_MEAS_REG, dataToWrite);
-	
 	
 	return readRegister(0xD0);
 }
@@ -285,7 +284,7 @@ void BME280::readRegisterRegion(uint8_t *outputPointer , uint8_t offset, uint8_t
 		Wire.write(offset);
 		Wire.endTransmission();
 
-		// request 6 bytes from slave device
+		// request bytes from slave device
 		Wire.requestFrom(settings.I2CAddress, length);
 		while ( (Wire.available()) && (i < length))  // slave may send less than requested
 		{

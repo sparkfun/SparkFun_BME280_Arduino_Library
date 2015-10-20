@@ -1,51 +1,87 @@
-/******************************************************************************
-<filename>
-<Title>
-<name @ SparkFun Electronics>
-<original creation date>
-<github repository address>
-<multiline verbose description of file functionality>
+/*BME280 Arduino and Teensy example
+Marshall Taylor @ SparkFun Electronics
+Oct 19, 2015
+https://github.com/sparkfun/SparkFun_BME280_Arduino_Library
 
-This file reads and writes arbitrary values to the I2C bus, targeting the BME280
-
-
+This sketch displays the pressure in pascals and temperature
+in fahrenheit.
 
 Resources:
-<additional library requirements>
+Uses Wire.h for I2C operation
+Uses SPI.h for SPI operation
+
+Hardware connections:
+BME280 -> Arduino
+GND -> GND
+3.3 -> 3.3
+SDA -> A4
+SCL -> A5
+
+LCD:
+ * LCD RS pin to digital pin 7
+ * LCD Enable pin to digital 6
+ * LCD D4 pin to digital pin 5
+ * LCD D5 pin to digital pin 4
+ * LCD D6 pin to digital pin 3
+ * LCD D7 pin to digital pin 2
+ * LCD R/W pin to ground
+ * 10K resistor:
+ * ends to +5V and ground
+ * wiper to LCD VO pin (pin 3)
+
 Development environment specifics:
-<arduino/development environment version>
-<hardware version>
-<etc>
+Arduino IDE 1.6.4
+Teensy loader 1.23
+
 This code is released under the [MIT License](http://opensource.org/licenses/MIT).
 Please review the LICENSE.md file included with this example. If you have any questions 
 or concerns with licensing, please contact techsupport@sparkfun.com.
 Distributed as-is; no warranty is given.
 ******************************************************************************/
 
+
+// Load the LiquidCrystal library, which will give us
+// commands to interface to the LCD:
+
+#include <LiquidCrystal.h>
+
+// Initialize the library with the pins we're using.
+// (Note that you can use different pins if needed.)
+// See http://arduino.cc/en/Reference/LiquidCrystal
+// for more information:
+
+
 #include <stdint.h>
 #include "SparkFunBME280.h"
-
+//Library allows either I2C or SPI, so include both.
 #include "Wire.h"
 #include "SPI.h"
 
 //Global sensor object
 BME280 mySensor;
 
-
-float t_fine;
+LiquidCrystal lcd(7,6,5,4,3,2);
 
 void setup()
 {
-	//Tell the driver what sensor modes to use here!
-	
+	lcd.begin(16, 2);
+    lcd.clear();
+
+	//***Driver settings********************************//
 	//commInterface can be I2C_MODE or SPI_MODE
+	//specify chipSelectPin using arduino pin names
+	//specify I2C address.  Can be 0x77(default) or 0x76
+	
+	//For I2C, enable the following and disable the SPI section
 	mySensor.settings.commInterface = I2C_MODE;
-	
-	//Specify chipSelectPin using arduino pin names
-	mySensor.settings.chipSelectPin = 10;
-	
-	//Specify I2C address.  Can be 0x77(default) or 0x76
 	mySensor.settings.I2CAddress = 0x77;
+	
+	//For SPI enable the following and dissable the I2C section
+	//mySensor.settings.commInterface = SPI_MODE;
+	//mySensor.settings.chipSelectPin = 10;
+
+
+	//***Operation settings*****************************//
 	
 	//renMode can be:
 	//  0, Sleep mode
@@ -93,21 +129,44 @@ void setup()
 	
 	//Calling .begin() causes the settings to be loaded
 	Serial.println(mySensor.begin(), HEX);
+	delay(10);  //Use delay if reading directly after .begin is called.  BME280 requires 2ms to start up.
 
-//Debug chaff
-	/*
+	Serial.print("Displaying ID, reset and ctrl regs\n");
+	
 	Serial.print("ID(0xD0): 0x");
-	Serial.println(mySensor.readRegister(0xD0), HEX);
+	Serial.println(mySensor.readRegister(BME280_CHIP_ID_REG), HEX);
 	Serial.print("Reset register(0xE0): 0x");
-	Serial.println(mySensor.readRegister(0xE0), HEX);
+	Serial.println(mySensor.readRegister(BME280_RST_REG), HEX);
 	Serial.print("ctrl_meas(0xF4): 0x");
-	Serial.println(mySensor.readRegister(0xF4), HEX);
+	Serial.println(mySensor.readRegister(BME280_CTRL_MEAS_REG), HEX);
 	Serial.print("ctrl_hum(0xF2): 0x");
-	Serial.println(mySensor.readRegister(0xF2), HEX);
-		
-	Serial.println();
+	Serial.println(mySensor.readRegister(BME280_CTRL_HUMIDITY_REG), HEX);
 
-	Serial.print("\nDisplaying concatenated calibration words\n");
+	Serial.print("\n\n");
+
+	Serial.print("Displaying all regs\n");
+	uint8_t memCounter = 0x80;
+	uint8_t tempReadData;
+	for(int rowi = 8; rowi < 16; rowi++ )
+	{
+		Serial.print("0x");
+		Serial.print(rowi, HEX);
+		Serial.print("0:");
+		for(int coli = 0; coli < 16; coli++ )
+		{
+			tempReadData = mySensor.readRegister(memCounter);
+			Serial.print((tempReadData >> 4) & 0x0F, HEX);//Print first hex nibble
+			Serial.print(tempReadData & 0x0F, HEX);//Print second hex nibble
+			Serial.print(" ");
+			memCounter++;
+		}
+		Serial.print("\n");
+	}
+	
+	
+	Serial.print("\n\n");
+	
+	Serial.print("Displaying concatenated calibration words\n");
 	Serial.print("dig_T1, uint16: ");
 	Serial.println(mySensor.calibration.dig_T1);
 	Serial.print("dig_T2, int16: ");
@@ -146,50 +205,25 @@ void setup()
 	Serial.println(mySensor.calibration.dig_H5);
 	Serial.print("dig_H6, uint8: ");
 	Serial.println(mySensor.calibration.dig_H6);
-	*/
+		
+	Serial.println();
 }
 
 void loop()
 {
-//Debug chaff
-	/*
-	Serial.print("ID: 0x");
-	Serial.println(mySensor.readRegister(0xD0), HEX);
-	Serial.print("Status: 0x");
-	Serial.println(mySensor.readRegister(0xF3), HEX);
-	Serial.print("tempMSB: 0x");
-	Serial.println(mySensor.readRegister(BME280_TEMPERATURE_MSB_REG), HEX);
-	Serial.print("tempLSB: 0x");
-	Serial.println(mySensor.readRegister(BME280_TEMPERATURE_LSB_REG), HEX);
-	Serial.print("tempXLSB: 0x");
-	Serial.println(mySensor.readRegister(BME280_TEMPERATURE_XLSB_REG), HEX);
-	*/
-
-	Serial.print("Temperature: ");
-	Serial.print(mySensor.readTempC(), 2);
-	Serial.println(" degrees C");
-
-	Serial.print("Temperature: ");
-	Serial.print(mySensor.readTempF(), 2);
-	Serial.println(" degrees F");
-
-	Serial.print("Pressure: ");
-	Serial.print(mySensor.readFloatPressure(), 2);
-	Serial.println(" Pa");
-
-	Serial.print("Altitude: ");
-	Serial.print(mySensor.readFloatAltitudeMeters(), 2);
-	Serial.println("m");
-
-	Serial.print("Altitude: ");
-	Serial.print(mySensor.readFloatAltitudeFeet(), 2);
-	Serial.println("ft");	
-
-	Serial.print("%RH: ");
-	Serial.print(mySensor.readFloatHumidity(), 2);
-	Serial.println(" %");
+	//Get the local temperature!  Do this for calibration
+	mySensor.readTempC();
 	
-	Serial.println();
+    lcd.setCursor(0,0);
+	lcd.print("Press: ");
+	lcd.print((uint32_t)mySensor.readFloatPressure());
+	lcd.print(" Pa");
+
+    lcd.setCursor(0,1);
+	lcd.print("Humid: ");
+	lcd.print((uint8_t)mySensor.readFloatHumidity());
+	lcd.print(" %");
+	
 	
 	delay(1000);
 
