@@ -3,7 +3,7 @@ SparkFun <PRODUCT NAME> Arduino Library
 
 ![SparkFun BME280 Breakout](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/blob/master/readme_picture.jpg)
 
-[*SparkFun BME280 (BOB-13676)*](https://www.sparkfun.com/products/13676)
+[*SparkFun BME280 (SEN-13676)*](https://www.sparkfun.com/products/13676)
 
 This library allows the user to:
 
@@ -38,7 +38,7 @@ Documentation
 Products that use this Library 
 ---------------------------------
 
-* [*BOB-13676*](https://www.sparkfun.com/products/13676)
+* [*SEN-13676*](https://www.sparkfun.com/products/13676)
 
 Version History
 ---------------
