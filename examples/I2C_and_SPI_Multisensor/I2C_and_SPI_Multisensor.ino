@@ -101,7 +101,9 @@ void setup()
 
 void loop()
 {
-
+	//Start with temperature, as that data is needed for accurate compensation.
+	//Reading the temperature updates the compensators of the other functions
+	//in the background.
 	Serial.print("Temperature: ");
 	Serial.print(mySensorA.readTempC(), 2);
 	Serial.print(", ");

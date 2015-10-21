@@ -79,7 +79,7 @@ void setup()
 	Serial.print("Sample,");
 	Serial.print("T(deg C),");
 	Serial.print("T(deg F),");
-	Serial.print("P(kPa),");
+	Serial.print("P(Pa),");
 	Serial.print("Alt(m),");
 	Serial.print("Alt(ft),");
 	Serial.print("%RH");
@@ -91,6 +91,9 @@ void loop()
 {
 
 	//Print each row in the loop
+	//Start with temperature, as that data is needed for accurate compensation.
+	//Reading the temperature updates the compensators of the other functions
+	//in the background.
 	Serial.print(sampleNumber);
 	Serial.print(",");
 	Serial.print(mySensor.readTempC(), 2);
