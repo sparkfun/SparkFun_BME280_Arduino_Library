@@ -1,21 +1,23 @@
 SparkFun <PRODUCT NAME> Arduino Library
 ========================================
 
-![SparkFun BME280 Breakout](https://cdn.sparkfun.com/assets/learn_tutorials/4/1/9/HUThumb.jpg)
+![SparkFun BME280 Breakout](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/blob/master/readme_picture.jpg)
 
-[*SparkFun BME280 (SEN-00000)*](URL for product on Sparkfun.com)
+[*SparkFun BME280 (BOB-13676)*](https://www.sparkfun.com/products/13676)
 
 This library allows the user to:
 
-* Read pressure in kPa
+* Read pressure in Pa
 * Read temperature in C
 * Read humidity in %RH
 
-It also provides the following mathematical functions based from the above
+It also provides the following mathematical functions based from the above.
 
 * Read temperature in F
 * Read altitude in meters
 * Read altitude in feet
+
+Some examples include a circular buffer class for averaging.
 
 Repository Contents
 -------------------
@@ -36,13 +38,13 @@ Documentation
 Products that use this Library 
 ---------------------------------
 
-* [SEN-00000](SparkFun part URL)- Basic part and short description here
+* [*BOB-13676*](https://www.sparkfun.com/products/13676)
 
 Version History
 ---------------
 
 * [vExxFxxZxxHxxLxxSxx](URL for tag specific to this version) - Description 
-* [vEyyFyyZyyHyyLyySyy](URL for tag specific to this version) - Description
+* [V_1.0.0](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/V_1.0.0) - Public release.
 
 License Information
 -------------------
