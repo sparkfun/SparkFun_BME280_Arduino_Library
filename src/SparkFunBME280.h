@@ -166,6 +166,11 @@ class BME280
     float readTempC( void );
     float readTempF( void );
 
+	//Force the sensor to make readings right now. After this returns the
+	//sensor will be in sleep mode and you'll need to call this function again
+	//to get new readings.
+	void forceReadings( void );
+
     //The following utilities read and write
 
 	//ReadRegisterRegion takes a uint8 array address as input and reads

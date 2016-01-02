@@ -267,6 +267,36 @@ float BME280::readTempF( void )
 
 //****************************************************************************//
 //
+//  Force Mode
+//
+//****************************************************************************//
+void BME280::forceReadings( void )
+{
+	//set Force mode
+	settings.runMode = 0x01;	//Table 25: register settings mode
+	uint8_t dataToWrite = 0;
+	dataToWrite = (settings.tempOverSample << 0x5) & 0xE0;
+	dataToWrite |= (settings.pressOverSample << 0x02) & 0x1C;
+	dataToWrite |= (settings.runMode) & 0x03;
+	writeRegister(BME280_CTRL_MEAS_REG, dataToWrite);
+
+	//sleep while measurements are happening
+	//(we'll use t_measure,max in "9.1 Measurement time" of the datasheet)
+	uint32_t t_measure_us = 1250;		// microseconds
+	if (settings.tempOverSample) {
+		t_measure_us += 2300 * settings.tempOverSample;
+	}
+	if (settings.pressOverSample) {
+		t_measure_us += 2300 * settings.pressOverSample + 575;
+	}
+	if (settings.humidOverSample) {
+		t_measure_us += 2300 * settings.humidOverSample + 575;
+	}
+	delay((t_measure_us / 1000) + 1);	// round up
+}
+
+//****************************************************************************//
+//
 //  Utility
 //
 //****************************************************************************//
