@@ -170,7 +170,7 @@ void setup()
 	Serial.println(mySensor.calibration.dig_H4);
 	Serial.print("dig_H5, int16: ");
 	Serial.println(mySensor.calibration.dig_H5);
-	Serial.print("dig_H6, uint8: ");
+	Serial.print("dig_H6, int8: ");
 	Serial.println(mySensor.calibration.dig_H6);
 		
 	Serial.println();
