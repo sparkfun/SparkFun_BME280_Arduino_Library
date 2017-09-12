@@ -24,6 +24,7 @@ Distributed as-is; no warranty is given.
 #define __BME280_H__
 
 #include "stdint.h"
+#include "Wire.h"
 
 #define I2C_MODE 0
 #define SPI_MODE 1
@@ -129,7 +130,7 @@ struct SensorCalibration
 	uint8_t dig_H3;
 	int16_t dig_H4;
 	int16_t dig_H5;
-	uint8_t dig_H6;
+	int8_t dig_H6;
 	
 };
 
@@ -150,7 +151,7 @@ class BME280
 	
 	//Call to apply SensorSettings.
 	//This also gets the SensorCalibration constants
-    uint8_t begin( void );
+	uint8_t begin(TwoWire *theWire = &Wire);
 
 	//Software reset routine
 	void reset( void );
@@ -178,7 +179,9 @@ class BME280
 	int16_t readRegisterInt16( uint8_t offset );
 	//Writes a byte;
     void writeRegister(uint8_t, uint8_t);
-    
+	
+  private:
+	TwoWire *wire;
 };
 
 

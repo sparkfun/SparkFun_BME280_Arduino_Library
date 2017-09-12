@@ -92,9 +92,9 @@ void setup()
 	delay(10);  //Make sure sensor had enough time to turn on. BME280 requires 2ms to start up.
 	//Calling .begin() causes the settings to be loaded
 	Serial.print("Sensor A: 0x");
-	Serial.println(mySensorA.begin(), HEX);
+	Serial.println(mySensorA.begin(), HEX); //mySensor.begin(&Wire), use &Wire1, &Wire2 for different Wire Busses
 	Serial.print("Sensor B: 0x");
-	Serial.println(mySensorB.begin(), HEX);
+	Serial.println(mySensorB.begin(), HEX); //SensorB is in SPI Mode
 
 
 }

@@ -125,7 +125,7 @@ void setup()
 	Serial.print("Starting BME280... result of .begin(): 0x");
 	delay(10);  //Make sure sensor had enough time to turn on. BME280 requires 2ms to start up.
 	//Calling .begin() causes the settings to be loaded
-	Serial.println(mySensor.begin(), HEX);
+	Serial.println(mySensor.begin(), HEX);    //mySensor.begin(&Wire), use &Wire1, &Wire2 for different Wire Busses
 
 	Serial.println();
 
