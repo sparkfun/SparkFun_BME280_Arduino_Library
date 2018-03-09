@@ -155,6 +155,9 @@ class BME280
 	//Software reset routine
 	void reset( void );
 	
+	//sensor in "forced mode"
+	void force( void );
+	
     //Returns the values as floats.
     float readFloatPressure( void );
 	float readFloatAltitudeMeters( void );
