@@ -94,7 +94,9 @@ struct SensorSettings
   //Main Interface and mode settings
     uint8_t commInterface;
     uint8_t I2CAddress;
-    uint8_t chipSelectPin;
+	uint8_t I2C_SDAPin;
+	uint8_t I2C_SCLPin;
+	uint8_t chipSelectPin;
 	
 	uint8_t runMode;
 	uint8_t tStandby;

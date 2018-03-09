@@ -42,7 +42,11 @@ BME280::BME280( void )
 	settings.commInterface = I2C_MODE; //Can be I2C_MODE, SPI_MODE
 	//Select address for I2C.  Does nothing for SPI
 	settings.I2CAddress = 0x77; //Ignored for SPI_MODE
-	//Select CS pin for SPI.  Does nothing for I2C
+	//Select SDA pin for I2C.  Does nothing for I2C
+	settings.I2C_SDAPin = -1;
+	//Select SCL pin for I2C.  Does nothing for I2C
+	settings.I2C_SCLPin = -1;
+	//Select CS pin for I2C.  Does nothing for I2C
 	settings.chipSelectPin = 10;
 	settings.runMode = 0;
 	settings.tempOverSample = 0;
@@ -69,7 +73,8 @@ uint8_t BME280::begin()
 	{
 
 	case I2C_MODE:
-		Wire.begin();
+		if (settings.I2C_SDAPin == -1 || settings.I2C_SCLPin == -1) Wire.begin();
+		else Wire.begin(settings.I2C_SDAPin, settings.I2C_SCLPin);
 		break;
 
 	case SPI_MODE:
