@@ -128,7 +128,7 @@ uint8_t BME280::begin()
 	calibration.dig_H3 = ((uint8_t)(readRegister(BME280_DIG_H3_REG)));
 	calibration.dig_H4 = ((int16_t)((readRegister(BME280_DIG_H4_MSB_REG) << 4) + (readRegister(BME280_DIG_H4_LSB_REG) & 0x0F)));
 	calibration.dig_H5 = ((int16_t)((readRegister(BME280_DIG_H5_MSB_REG) << 4) + ((readRegister(BME280_DIG_H4_LSB_REG) >> 4) & 0x0F)));
-	calibration.dig_H6 = ((uint8_t)readRegister(BME280_DIG_H6_REG));
+	calibration.dig_H6 = ((int8_t)readRegister(BME280_DIG_H6_REG));
 
 	//Set the oversampling control words.
 	//config will only be writeable in sleep mode, so first insure that.
