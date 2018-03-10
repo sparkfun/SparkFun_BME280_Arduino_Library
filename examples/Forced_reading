@@ -1,0 +1,118 @@
+#include "SparkFunBME280.h"
+#include "Wire.h"
+
+//Global sensor object
+BME280 mySensorA;
+BME280 mySensorB;
+
+void setup()
+{
+  //***Set up sensor 'A'******************************//
+  //commInterface can be I2C_MODE or SPI_MODE (cs=10,sck=13,miso=12,mosi=11)
+  mySensorA.settings.commInterface = I2C_MODE;
+  mySensorA.settings.I2CAddress = 0x77; // can be 0x76 or 0x77
+  mySensorA.settings.runMode = 2;
+  //renMode can be:
+  //  0, Sleep mode
+  //  1 or 2, Forced mode
+  //  3, Normal mode
+  mySensorA.settings.tStandby = 0;
+  //tStandby can be:
+  //  0, 0.5ms
+  //  1, 62.5ms
+  //  2, 125ms
+  //  3, 250ms
+  //  4, 500ms
+  //  5, 1000ms
+  //  6, 10ms
+  //  7, 20ms
+  mySensorA.settings.filter = 0;
+  //filter can be off or number of FIR coefficients to use:
+  //  0, filter off
+  //  1, coefficients = 2
+  //  2, coefficients = 4
+  //  3, coefficients = 8
+  //  4, coefficients = 16
+  mySensorA.settings.tempOverSample = 1;
+  //tempOverSample can be:
+  //  0, skipped
+  //  1 through 5, oversampling *1, *2, *4, *8, *16 respectively
+  mySensorA.settings.pressOverSample = 1;
+  //pressOverSample can be:
+  //  0, skipped
+  //  1 through 5, oversampling *1, *2, *4, *8, *16 respectively
+  mySensorA.settings.humidOverSample = 1;
+  //humidOverSample can be:
+  //  0, skipped
+  //  1 through 5, oversampling *1, *2, *4, *8, *16 respectively
+//####################################################################################################################
+  //***Set up sensor 'B'******************************//
+  //commInterface can be I2C_MODE or SPI_MODE
+  //specify chipSelectPin using arduino pin names
+  //specify I2C address.  Can be 0x77(default) or 0x76
+  mySensorB.settings.commInterface = I2C_MODE;
+  mySensorB.settings.I2CAddress = 0x76;
+  mySensorB.settings.runMode = 0;
+  //renMode can be:
+  //  0, Sleep mode
+  //  1 or 2, Forced mode
+  //  3, Normal mode
+  mySensorB.settings.tStandby = 0;
+  //tStandby can be:
+  //  0, 0.5ms
+  //  1, 62.5ms
+  //  2, 125ms
+  //  3, 250ms
+  //  4, 500ms
+  //  5, 1000ms
+  //  6, 10ms
+  //  7, 20ms
+  mySensorB.settings.filter = 0;
+  //filter can be off or number of FIR coefficients to use:
+  //  0, filter off
+  //  1, coefficients = 2
+  //  2, coefficients = 4
+  //  3, coefficients = 8
+  //  4, coefficients = 16
+  mySensorB.settings.tempOverSample = 1;
+  //tempOverSample can be:
+  //  0, skipped
+  //  1 through 5, oversampling *1, *2, *4, *8, *16 respectively
+  mySensorB.settings.pressOverSample = 1;
+  //pressOverSample can be:
+  //  0, skipped
+  //  1 through 5, oversampling *1, *2, *4, *8, *16 respectively
+  mySensorB.settings.humidOverSample = 1;
+  //humidOverSample can be:
+  //  0, skipped
+  //  1 through 5, oversampling *1, *2, *4, *8, *16 respectively  
+	
+	
+	
+	//***Initialize the things**************************//
+	Serial.begin(115200);
+  mySensorA.begin();
+  mySensorB.begin();
+}
+
+void loop()
+{
+	//Start with temperature, as that data is needed for accurate compensation.
+	//Reading the temperature updates the compensators of the other functions
+	//in the background.
+	for(byte a=0;a<3;a++){                  // update every 3rd cycle, else only print last value measured
+	Serial.print("Temperature: ");
+	Serial.print(mySensorA.readTempC(), 2);
+	Serial.print(", ");
+	Serial.print(mySensorB.readTempC(), 2);
+	Serial.println(" degrees C");
+	Serial.println();
+  if(a<2){ 
+  }
+  else {
+      mySensorA.force();
+      mySensorB.force();
+  }
+	delay(1000);
+  }
+}
