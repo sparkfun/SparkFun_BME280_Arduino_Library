@@ -282,7 +282,9 @@ float BME280::readFloatPressure( void )
 
 	// Returns pressure in Pa as unsigned 32 bit integer in Q24.8 format (24 integer bits and 8 fractional bits).
 	// Output value of “24674867” represents 24674867/256 = 96386.2 Pa = 963.862 hPa
-	int32_t adc_P = ((uint32_t)readRegister(BME280_PRESSURE_MSB_REG) << 12) | ((uint32_t)readRegister(BME280_PRESSURE_LSB_REG) << 4) | ((readRegister(BME280_PRESSURE_XLSB_REG) >> 4) & 0x0F);
+    uint8_t buffer[3];
+	readRegisterRegion(buffer, BME280_PRESSURE_MSB_REG, 3);
+    int32_t adc_P = ((uint32_t)buffer[0] << 12) | ((uint32_t)buffer[1] << 4) | ((buffer[2] >> 4) & 0x0F);
 	
 	int64_t var1, var2, p_acc;
 	var1 = ((int64_t)t_fine) - 128000;
@@ -347,7 +349,9 @@ float BME280::readFloatHumidity( void )
 	
 	// Returns humidity in %RH as unsigned 32 bit integer in Q22. 10 format (22 integer and 10 fractional bits).
 	// Output value of “47445” represents 47445/1024 = 46. 333 %RH
-	int32_t adc_H = ((uint32_t)readRegister(BME280_HUMIDITY_MSB_REG) << 8) | ((uint32_t)readRegister(BME280_HUMIDITY_LSB_REG));
+    uint8_t buffer[2];
+	readRegisterRegion(buffer, BME280_HUMIDITY_MSB_REG, 2);
+    int32_t adc_H = ((uint32_t)buffer[0] << 8) | ((uint32_t)buffer[1]);
 	
 	int32_t var1;
 	var1 = (t_fine - ((int32_t)76800));
@@ -376,7 +380,9 @@ float BME280::readTempC( void )
 	// t_fine carries fine temperature as global value
 
 	//get the reading (adc_T);
-	int32_t adc_T = ((uint32_t)readRegister(BME280_TEMPERATURE_MSB_REG) << 12) | ((uint32_t)readRegister(BME280_TEMPERATURE_LSB_REG) << 4) | ((readRegister(BME280_TEMPERATURE_XLSB_REG) >> 4) & 0x0F);
+    uint8_t buffer[3];
+	readRegisterRegion(buffer, BME280_TEMPERATURE_MSB_REG, 3);
+    int32_t adc_T = ((uint32_t)buffer[0] << 12) | ((uint32_t)buffer[1] << 4) | ((buffer[2] >> 4) & 0x0F);
 
 	//By datasheet, calibrate
 	int64_t var1, var2;
