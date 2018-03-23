@@ -111,10 +111,6 @@ struct SensorSettings
     uint8_t commInterface;
     uint8_t I2CAddress;
     uint8_t chipSelectPin;
-	
-	uint8_t runMode;
-	uint8_t tStandby;
-	uint8_t filter;
 };
 
 //Used to hold the calibration constants.  These are used
@@ -171,6 +167,8 @@ class BME280
 	void setTempOverSample(uint8_t overSampleAmount); //Set the temperature sample mode
 	void setPressureOverSample(uint8_t overSampleAmount); //Set the pressure sample mode
 	void setHumidityOverSample(uint8_t overSampleAmount); //Set the humidity sample mode
+	void setStandbyTime(uint8_t timeSetting); //Set the standby time between measurements
+	void setFilter(uint8_t filterSetting); //Set the filter
 	
 	void setI2CAddress(uint8_t i2caddress); //Set the address the library should use to communicate. Use if address jumper is closed (0x76).
 

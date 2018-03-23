@@ -46,8 +46,6 @@ BME280::BME280( void )
 
 	//Select CS pin for SPI.  Does nothing for I2C
 	settings.chipSelectPin = 10;
-
-	settings.runMode = 0;
 }
 
 
@@ -128,13 +126,11 @@ uint8_t BME280::begin()
 	calibration.dig_H5 = ((int16_t)((readRegister(BME280_DIG_H5_MSB_REG) << 4) + ((readRegister(BME280_DIG_H4_LSB_REG) >> 4) & 0x0F)));
 	calibration.dig_H6 = ((int8_t)readRegister(BME280_DIG_H6_REG));
 
-	settings.runMode = 3; //  3, Normal mode
-	settings.tStandby = 0; //  0, 0.5ms
-	settings.filter = 0; //  0, filter off
-
-	setPressureOverSample(1); //Default
-	setHumidityOverSample(1); //Default
-	setTempOverSample(1); //Default
+	setStandbyTime(0); //Default to 0.5ms
+	setFilter(0); //Default filter off
+	setPressureOverSample(1); //Default of 1x oversample
+	setHumidityOverSample(1); //Default of 1x oversample
+	setTempOverSample(1); //Default of 1x oversample
 	
 	setMode(MODE_NORMAL); //Go!
 	
@@ -155,7 +151,7 @@ bool BME280::beginI2C(TwoWire &wirePort)
 }
 
 //Set the mode bits in the ctrl_meas register
-//Mode 00 = Sleep
+// Mode 00 = Sleep
 // 01 and 10 = Forced
 // 11 = Normal mode
 void BME280::setMode(uint8_t mode)
@@ -166,6 +162,43 @@ void BME280::setMode(uint8_t mode)
 	controlData &= ~( (1<<1) | (1<<0) ); //Clear the mode[1:0] bits
 	controlData |= mode; //Set
 	writeRegister(BME280_CTRL_MEAS_REG, controlData);
+}
+
+//Set the standby bits in the config register
+//tStandby can be:
+//  0, 0.5ms
+//  1, 62.5ms
+//  2, 125ms
+//  3, 250ms
+//  4, 500ms
+//  5, 1000ms
+//  6, 10ms
+//  7, 20ms
+void BME280::setStandbyTime(uint8_t timeSetting)
+{
+	if(timeSetting > 0b111) timeSetting = 0; //Error check. Default to 0.5ms
+	
+	uint8_t controlData = readRegister(BME280_CONFIG_REG);
+	controlData &= ~( (1<<7) | (1<<6) | (1<<5) ); //Clear the 7/6/5 bits
+	controlData |= (timeSetting << 5); //Align with bits 7/6/5
+	writeRegister(BME280_CONFIG_REG, controlData);
+}
+
+//Set the filter bits in the config register
+//filter can be:
+//  0, filter off
+//  1, 2
+//  2, 4
+//  3, 8
+//  5+, 16
+void BME280::setFilter(uint8_t filterSetting)
+{
+	if(filterSetting > 0b111) filterSetting = 0; //Error check. Default to filter off
+	
+	uint8_t controlData = readRegister(BME280_CONFIG_REG);
+	controlData &= ~( (1<<4) | (1<<3) | (1<<2) ); //Clear the 4/3/2 bits
+	controlData |= (filterSetting << 2); //Align with bits 4/3/2
+	writeRegister(BME280_CONFIG_REG, controlData);
 }
 
 //Gets the current mode bits in the ctrl_meas register
