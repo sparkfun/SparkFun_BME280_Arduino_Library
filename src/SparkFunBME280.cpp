@@ -102,8 +102,11 @@ uint8_t BME280::begin()
 		break;
 	}
 
+	//Check communication with IC before anything else
+	uint8_t chipID = readRegister(BME280_CHIP_ID_REG); //Should return 0x60
+	if(chipID != 0x60) return(chipID); //Failed!
+
 	//Reading all compensation data, range 0x88:A1, 0xE1:E7
-	
 	calibration.dig_T1 = ((uint16_t)((readRegister(BME280_DIG_T1_MSB_REG) << 8) + readRegister(BME280_DIG_T1_LSB_REG)));
 	calibration.dig_T2 = ((int16_t)((readRegister(BME280_DIG_T2_MSB_REG) << 8) + readRegister(BME280_DIG_T2_LSB_REG)));
 	calibration.dig_T3 = ((int16_t)((readRegister(BME280_DIG_T3_MSB_REG) << 8) + readRegister(BME280_DIG_T3_LSB_REG)));
@@ -305,7 +308,7 @@ float BME280::readFloatPressure( void )
 //Sets the internal variable _referencePressure so the 
 void BME280::setReferencePressure(float refPressure)
 {
-	_referencePressure = rePressure;
+	_referencePressure = refPressure;
 }
 
 //Return the local reference pressure
