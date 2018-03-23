@@ -305,6 +305,15 @@ void BME280::reset( void )
 	
 }
 
+void BME280::force( void )
+{
+    // We set the sensor in "forced mode" to force a reading.
+    // After the reading the sensor will go back to sleep mode.
+    uint8_t value = readRegister(BME280_CTRL_MEAS_REG);
+    value = value | 0x01;
+    writeRegister(BME280_CTRL_MEAS_REG, value);
+}
+
 //****************************************************************************//
 //
 //  Pressure Section
