@@ -175,7 +175,7 @@ class BME280
 	void setI2CAddress(uint8_t i2caddress); //Set the address the library should use to communicate. Use if address jumper is closed (0x76).
 
 	void setReferencePressure(float refPressure); //Allows user to set local sea level reference pressure
-	float getReferencePressuer();
+	float getReferencePressure();
 	
 	//Software reset routine
 	void reset( void );
