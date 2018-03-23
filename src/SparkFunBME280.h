@@ -17,13 +17,26 @@ This code is released under the [MIT License](http://opensource.org/licenses/MIT
 Please review the LICENSE.md file included with this example. If you have any questions 
 or concerns with licensing, please contact techsupport@sparkfun.com.
 Distributed as-is; no warranty is given.
+
+TODO:
+	roll library ver to 2.0
+	remove hard wire.
+	write escalating examples
+
+
 ******************************************************************************/
 
 // Test derived class for base class SparkFunIMU
 #ifndef __BME280_H__
 #define __BME280_H__
 
-#include "stdint.h"
+#if (ARDUINO >= 100)
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
+
+#include <Wire.h>
 
 #define I2C_MODE 0
 #define SPI_MODE 1
@@ -76,6 +89,9 @@ Distributed as-is; no warranty is given.
 #define BME280_HUMIDITY_MSB_REG			0xFD //Humidity MSB
 #define BME280_HUMIDITY_LSB_REG			0xFE //Humidity LSB
 
+#define MODE_SLEEP 0b00
+#define MODE_FORCED 0b01
+#define MODE_NORMAL 0b11
 
 //Class SensorSettings.  This object is used to hold settings data.  The application
 //uses this classes' data directly.  The settings are adopted and sent to the sensor
@@ -99,10 +115,6 @@ struct SensorSettings
 	uint8_t runMode;
 	uint8_t tStandby;
 	uint8_t filter;
-	uint8_t tempOverSample;
-	uint8_t pressOverSample;
-	uint8_t humidOverSample;
-
 };
 
 //Used to hold the calibration constants.  These are used
@@ -129,7 +141,7 @@ struct SensorCalibration
 	uint8_t dig_H3;
 	int16_t dig_H4;
 	int16_t dig_H5;
-	int8_t dig_H6;
+	uint8_t dig_H6;
 	
 };
 
@@ -151,7 +163,20 @@ class BME280
 	//Call to apply SensorSettings.
 	//This also gets the SensorCalibration constants
     uint8_t begin( void );
+    bool beginI2C(TwoWire &wirePort = Wire); //Uses Wire as default port and 0x77 as I2C address
+	
+	uint8_t getMode(void); //Get the current mode: sleep, forced, or normal
+	void setMode(uint8_t mode); //Set the current mode
 
+	void setTempOverSample(uint8_t overSampleAmount); //Set the temperature sample mode
+	void setPressureOverSample(uint8_t overSampleAmount); //Set the pressure sample mode
+	void setHumidityOverSample(uint8_t overSampleAmount); //Set the humidity sample mode
+	
+	void setI2CAddress(uint8_t i2caddress); //Set the address the library should use to communicate. Use if address jumper is closed (0x76).
+
+	void setReferencePressure(float refPressure); //Allows user to set local sea level reference pressure
+	float getReferencePressuer();
+	
 	//Software reset routine
 	void reset( void );
 	
@@ -178,6 +203,13 @@ class BME280
 	int16_t readRegisterInt16( uint8_t offset );
 	//Writes a byte;
     void writeRegister(uint8_t, uint8_t);
+
+private:
+	uint8_t checkSampleValue(uint8_t userValue); //Checks for valid over sample values
+
+	TwoWire *_i2cPort = 0;
+	
+	float _referencePressure = 101325.0; //Default but is changeable
     
 };
 
