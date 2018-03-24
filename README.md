@@ -1,9 +1,9 @@
-SparkFun <PRODUCT NAME> Arduino Library
+SparkFun BME280 Arduino Library
 ========================================
 
-![SparkFun BME280 Breakout](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/blob/master/readme_picture.jpg)
+![SparkFun BME280 Breakout](https://cdn.sparkfun.com//assets/parts/1/2/3/2/9/14348-01.jpg)
 
-[*SparkFun BME280 (SEN-13676)*](https://www.sparkfun.com/products/13676)
+[*SparkFun CCS811/BME280 Combo (SEN-14348)*](https://www.sparkfun.com/products/14348)
 
 This library allows the user to:
 
@@ -38,6 +38,7 @@ Documentation
 Products that use this Library 
 ---------------------------------
 
+* [*SEN-14348*](https://www.sparkfun.com/products/14348)
 * [*SEN-13676*](https://www.sparkfun.com/products/13676)
 
 Version History
@@ -46,6 +47,8 @@ Version History
 * [V_1.0.0](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/V_1.0.0) - Public release.
 * [V_1.1.0](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/V_1.1.0) - Pulled request to add decimal precision to readFloatPressure() and readFloatHumidity().
 * [V_1.2.0](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/V_1.2.0) - Added ESP32 architecture directives to modify begin operation.
+* [V_2.0.0](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/V_2.0.0) - Major update. Generalized wire port. Functionalized oversampling, standby time, etc. Added setMode.
+
 
 License Information
 -------------------
