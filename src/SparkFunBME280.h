@@ -37,6 +37,7 @@ TODO:
 #endif
 
 #include <Wire.h>
+#include <SPI.h>
 
 #define I2C_MODE 0
 #define SPI_MODE 1
