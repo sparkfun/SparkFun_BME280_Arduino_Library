@@ -12,6 +12,7 @@ BME280	KEYWORD1
 
 begin	KEYWORD2
 reset	KEYWORD2
+
 readFloatPressure	KEYWORD2
 readFloatAltitudeMeters	KEYWORD2
 readFloatAltitudeFeet	KEYWORD2
@@ -22,6 +23,18 @@ readRegisterRegion	KEYWORD2
 readRegister	KEYWORD2
 readRegisterInt16	KEYWORD2
 writeRegister	KEYWORD2
+
+beginI2C	KEYWORD2
+setFilter	KEYWORD2
+setStandByTime	KEYWORD2
+setMode	KEYWORD2
+getMode	KEYWORD2
+setTempOverSample	KEYWORD2
+setPressureOverSample	KEYWORD2
+setHumidtyOverSample	KEYWORD2
+setI2CAddress	KEYWORD2
+isMeasuring	KEYWORD2
+setReferencePressure	KEYWORD2
 
 ###################################################################
 # Constants

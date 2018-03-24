@@ -36,16 +36,22 @@ Distributed as-is; no warranty is given.
 //Constructor -- Specifies default configuration
 BME280::BME280( void )
 {
-	//Construct with these default settings if nothing is specified
+	//Construct with these default settings
 
-	//Select interface mode
-	settings.commInterface = I2C_MODE; //Can be I2C_MODE, SPI_MODE
+	settings.commInterface = I2C_MODE; //Default to I2C
 
-	//Select address for I2C.  Does nothing for SPI
-	settings.I2CAddress = 0x77; //Ignored for SPI_MODE
+	settings.I2CAddress = 0x77; //Default, jumper open is 0x77
+	settings.I2CPort = &Wire; //Default to Wire port
 
-	//Select CS pin for SPI.  Does nothing for I2C
-	settings.chipSelectPin = 10;
+	settings.chipSelectPin = 10; //Select CS pin for SPI
+	
+	//These are deprecated settings
+	settings.runMode = 3; //Normal/Run
+	settings.tStandby = 0; //0.5ms
+	settings.filter = 0; //Filter off
+	settings.tempOverSample = 1;
+	settings.pressOverSample = 1;
+	settings.humidOverSample = 1;
 }
 
 
@@ -67,7 +73,7 @@ uint8_t BME280::begin()
 	{
 
 	case I2C_MODE:
-		if(_i2cPort != 0) _i2cPort->begin();
+		settings.I2CPort->begin(); //The caller can begin their port and set the speed. We just confirm it here otherwise it can be hard to debug.
 		break;
 
 	case SPI_MODE:
@@ -91,7 +97,7 @@ uint8_t BME280::begin()
 		// MODE0 for Teensy 3.1 operation
 		SPI.setDataMode(SPI_MODE3);
 		#endif
-		// initalize the  data ready and chip select pins:
+		// initialize the  data ready and chip select pins:
 		pinMode(settings.chipSelectPin, OUTPUT);
 		digitalWrite(settings.chipSelectPin, HIGH);
 		break;
@@ -126,11 +132,13 @@ uint8_t BME280::begin()
 	calibration.dig_H5 = ((int16_t)((readRegister(BME280_DIG_H5_MSB_REG) << 4) + ((readRegister(BME280_DIG_H4_LSB_REG) >> 4) & 0x0F)));
 	calibration.dig_H6 = ((int8_t)readRegister(BME280_DIG_H6_REG));
 
-	setStandbyTime(0); //Default to 0.5ms
-	setFilter(0); //Default filter off
-	setPressureOverSample(1); //Default of 1x oversample
-	setHumidityOverSample(1); //Default of 1x oversample
-	setTempOverSample(1); //Default of 1x oversample
+	//Most of the time the sensor will be init with default values
+	//But in case user has old/deprecated code, use the settings.x values
+	setStandbyTime(settings.tStandby);
+	setFilter(settings.filter);
+	setPressureOverSample(settings.pressOverSample); //Default of 1x oversample
+	setHumidityOverSample(settings.humidOverSample); //Default of 1x oversample
+	setTempOverSample(settings.tempOverSample); //Default of 1x oversample
 	
 	setMode(MODE_NORMAL); //Go!
 	
@@ -140,8 +148,7 @@ uint8_t BME280::begin()
 //Begin comm with BME280 over I2C
 bool BME280::beginI2C(TwoWire &wirePort)
 {
-	_i2cPort = &wirePort;
-	_i2cPort->begin(); //The caller can begin their port and set the speed. We just confirm it here otherwise it can be hard to debug.
+	settings.I2CPort = &wirePort;
 	
 	settings.commInterface = I2C_MODE;
 	//settings.I2CAddress = 0x77; //We assume user has set the I2C address using setI2CAddress()
@@ -162,6 +169,16 @@ void BME280::setMode(uint8_t mode)
 	controlData &= ~( (1<<1) | (1<<0) ); //Clear the mode[1:0] bits
 	controlData |= mode; //Set
 	writeRegister(BME280_CTRL_MEAS_REG, controlData);
+}
+
+//Gets the current mode bits in the ctrl_meas register
+//Mode 00 = Sleep
+// 01 and 10 = Forced
+// 11 = Normal mode
+uint8_t BME280::getMode()
+{
+	uint8_t controlData = readRegister(BME280_CTRL_MEAS_REG);
+	return(controlData & 0b00000011); //Clear bits 7 through 2
 }
 
 //Set the standby bits in the config register
@@ -185,12 +202,12 @@ void BME280::setStandbyTime(uint8_t timeSetting)
 }
 
 //Set the filter bits in the config register
-//filter can be:
+//filter can be off or number of FIR coefficients to use:
 //  0, filter off
-//  1, 2
-//  2, 4
-//  3, 8
-//  5+, 16
+//  1, coefficients = 2
+//  2, coefficients = 4
+//  3, coefficients = 8
+//  4, coefficients = 16
 void BME280::setFilter(uint8_t filterSetting)
 {
 	if(filterSetting > 0b111) filterSetting = 0; //Error check. Default to filter off
@@ -199,16 +216,6 @@ void BME280::setFilter(uint8_t filterSetting)
 	controlData &= ~( (1<<4) | (1<<3) | (1<<2) ); //Clear the 4/3/2 bits
 	controlData |= (filterSetting << 2); //Align with bits 4/3/2
 	writeRegister(BME280_CONFIG_REG, controlData);
-}
-
-//Gets the current mode bits in the ctrl_meas register
-//Mode 00 = Sleep
-// 01 and 10 = Forced
-// 11 = Normal mode
-uint8_t BME280::getMode()
-{
-	uint8_t controlData = readRegister(BME280_CTRL_MEAS_REG);
-	return(controlData & 0b11111100); //Mask out all but bits 1 and 0
 }
 
 //Set the temperature oversample value
@@ -296,6 +303,13 @@ uint8_t BME280::checkSampleValue(uint8_t userValue)
 void BME280::setI2CAddress(uint8_t address)
 {
 	settings.I2CAddress = address; //Set the I2C address for this device
+}
+
+//Check the measuring bit and return true while device is taking measurement
+bool BME280::isMeasuring(void)
+{
+	uint8_t stat = readRegister(BME280_STAT_REG);
+	return(stat & (1<<3)); //If the measuring bit (3) is set, return true
 }
 
 //Strictly resets.  Run .begin() afterwards
@@ -454,15 +468,15 @@ void BME280::readRegisterRegion(uint8_t *outputPointer , uint8_t offset, uint8_t
 	{
 
 	case I2C_MODE:
-		_i2cPort->beginTransmission(settings.I2CAddress);
-		_i2cPort->write(offset);
-		_i2cPort->endTransmission();
+		settings.I2CPort->beginTransmission(settings.I2CAddress);
+		settings.I2CPort->write(offset);
+		settings.I2CPort->endTransmission();
 
 		// request bytes from slave device
-		_i2cPort->requestFrom(settings.I2CAddress, length);
-		while ( (_i2cPort->available()) && (i < length))  // slave may send less than requested
+		settings.I2CPort->requestFrom(settings.I2CAddress, length);
+		while ( (settings.I2CPort->available()) && (i < length))  // slave may send less than requested
 		{
-			c = _i2cPort->read(); // receive a byte as character
+			c = settings.I2CPort->read(); // receive a byte as character
 			*outputPointer = c;
 			outputPointer++;
 			i++;
@@ -494,19 +508,19 @@ void BME280::readRegisterRegion(uint8_t *outputPointer , uint8_t offset, uint8_t
 uint8_t BME280::readRegister(uint8_t offset)
 {
 	//Return value
-	uint8_t result;
+	uint8_t result = 0;
 	uint8_t numBytes = 1;
 	switch (settings.commInterface) {
 
 	case I2C_MODE:
-		_i2cPort->beginTransmission(settings.I2CAddress);
-		_i2cPort->write(offset);
-		_i2cPort->endTransmission();
+		settings.I2CPort->beginTransmission(settings.I2CAddress);
+		settings.I2CPort->write(offset);
+		settings.I2CPort->endTransmission();
 
-		_i2cPort->requestFrom(settings.I2CAddress, numBytes);
-		while ( _i2cPort->available() ) // slave may send less than requested
+		settings.I2CPort->requestFrom(settings.I2CAddress, numBytes);
+		while ( settings.I2CPort->available() ) // slave may send less than requested
 		{
-			result = _i2cPort->read(); // receive a byte as a proper uint8_t
+			result = settings.I2CPort->read(); // receive a byte as a proper uint8_t
 		}
 		break;
 
@@ -542,10 +556,10 @@ void BME280::writeRegister(uint8_t offset, uint8_t dataToWrite)
 	{
 	case I2C_MODE:
 		//Write the byte
-		_i2cPort->beginTransmission(settings.I2CAddress);
-		_i2cPort->write(offset);
-		_i2cPort->write(dataToWrite);
-		_i2cPort->endTransmission();
+		settings.I2CPort->beginTransmission(settings.I2CAddress);
+		settings.I2CPort->write(offset);
+		settings.I2CPort->write(dataToWrite);
+		settings.I2CPort->endTransmission();
 		break;
 
 	case SPI_MODE:

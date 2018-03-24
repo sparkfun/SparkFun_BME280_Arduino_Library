@@ -107,10 +107,19 @@ struct SensorSettings
 {
   public:
 	
-  //Main Interface and mode settings
+	//Main Interface and mode settings
     uint8_t commInterface;
     uint8_t I2CAddress;
+	TwoWire *I2CPort;
     uint8_t chipSelectPin;
+	
+	//Deprecated settings
+	uint8_t runMode;
+	uint8_t tStandby;
+	uint8_t filter;
+	uint8_t tempOverSample;
+	uint8_t pressOverSample;
+	uint8_t humidOverSample;
 };
 
 //Used to hold the calibration constants.  These are used
@@ -175,6 +184,8 @@ class BME280
 	void setReferencePressure(float refPressure); //Allows user to set local sea level reference pressure
 	float getReferencePressure();
 	
+	bool isMeasuring(void); //Returns true while the device is taking measurement
+	
 	//Software reset routine
 	void reset( void );
 	
@@ -205,7 +216,7 @@ class BME280
 private:
 	uint8_t checkSampleValue(uint8_t userValue); //Checks for valid over sample values
 
-	TwoWire *_i2cPort = 0;
+	//TwoWire *_i2cPort = 0;
 	
 	float _referencePressure = 101325.0; //Default but is changeable
     
