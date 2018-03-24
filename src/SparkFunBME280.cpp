@@ -144,10 +144,9 @@ uint8_t BME280::begin()
 bool BME280::beginI2C(TwoWire &wirePort)
 {
 	settings.I2CPort = &wirePort;
-	
 	settings.commInterface = I2C_MODE;
 	//settings.I2CAddress = 0x77; //We assume user has set the I2C address using setI2CAddress()
-	
+
 	if(begin() == 0x60) return(true); //Begin normal init with these settings. Should return chip ID of 0x60
 	return(false);
 }
@@ -361,8 +360,6 @@ float BME280::getReferencePressure()
 	return(_referencePressure);
 }
 
-
-
 float BME280::readFloatAltitudeMeters( void )
 {
 	float heightOutput = 0;
@@ -405,10 +402,7 @@ float BME280::readFloatHumidity( void )
 	var1 = (var1 > 419430400 ? 419430400 : var1);
 
 	return (float)(var1>>12) / 1024.0;
-
 }
-
-
 
 //****************************************************************************//
 //

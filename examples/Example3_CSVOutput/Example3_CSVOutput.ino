@@ -10,11 +10,6 @@
   Feel like supporting our work? Buy a board from SparkFun!
   https://www.sparkfun.com/products/14348 - Qwiic Combo Board
   https://www.sparkfun.com/products/13676 - BME280 Breakout Board
-
-  This code is released under the [MIT License](http://opensource.org/licenses/MIT).
-  Please review the LICENSE.md file included with this example. If you have any questions 
-  or concerns with licensing, please contact techsupport@sparkfun.com.
-  Distributed as-is; no warranty is given.
 */
 
 #include "Wire.h"
@@ -32,7 +27,7 @@ void setup()
 
   if (mySensor.beginI2C() == false) //Begin communication over I2C
   {
-    Serial.println("The chip did not respond. Please check wiring.");
+    Serial.println("The sensor did not respond. Please check wiring.");
     while(1); //Freeze
   }
 

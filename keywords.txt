@@ -26,12 +26,12 @@ writeRegister	KEYWORD2
 
 beginI2C	KEYWORD2
 setFilter	KEYWORD2
-setStandByTime	KEYWORD2
+setStandbyTime	KEYWORD2
 setMode	KEYWORD2
 getMode	KEYWORD2
 setTempOverSample	KEYWORD2
 setPressureOverSample	KEYWORD2
-setHumidtyOverSample	KEYWORD2
+setHumidityOverSample	KEYWORD2
 setI2CAddress	KEYWORD2
 isMeasuring	KEYWORD2
 setReferencePressure	KEYWORD2

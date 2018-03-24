@@ -1,4 +1,4 @@
-/******************************************************************************
+/*
   Read all the regigsters of the BME280
   BME280 Arduino and Teensy example
   Marshall Taylor @ SparkFun Electronics
@@ -14,7 +14,6 @@
   This sketch configures the BME280 to read all measurements.  The sketch also
   displays the BME280's physical memory and what the driver perceives the
   calibration words to be.
-
 */
 
 #include "Wire.h"
@@ -25,17 +24,16 @@ BME280 mySensor; //Global sensor object
 void setup()
 {
   Serial.begin(9600);
+  while(!Serial); //Needed for printing correctly when using a Teensy
   Serial.println("Reading all registers from BME280");
 
   Wire.begin();
 
   if (mySensor.beginI2C() == false) //Begin communication over I2C
   {
-    Serial.println("The chip did not respond. Please check wiring.");
+    Serial.println("The sensor did not respond. Please check wiring.");
     while (1); //Freeze
   }
-
-  Serial.print("Displaying ID, reset and ctrl regs\n");
 
   Serial.print("ID(0xD0): ");
   printyPrintHex(mySensor.readRegister(BME280_CHIP_ID_REG));
@@ -52,19 +50,21 @@ void setup()
   Serial.println();
 
   Serial.println("Displaying all regs:");
-  uint8_t memCounter = 0x80;
-  uint8_t tempReadData;
-  for (int rowi = 8 ; rowi < 16 ; rowi++)
+  byte memCounter = 0x80;
+  for (byte row = 8 ; row < 16 ; row++)
   {
     Serial.print("0x");
-    Serial.print(rowi, HEX);
+    Serial.print(row, HEX);
     Serial.print("0:");
-    for (int coli = 0 ; coli < 16 ; coli++)
+
+    for (byte column = 0 ; column < 16 ; column++)
     {
-      tempReadData = mySensor.readRegister(memCounter);
-      Serial.print((tempReadData >> 4) & 0x0F, HEX);//Print first hex nibble
-      Serial.print(tempReadData & 0x0F, HEX);//Print second hex nibble
+      byte tempReadData = mySensor.readRegister(memCounter);
+
+      if(tempReadData < 0x10) Serial.print("0");
+      Serial.print(tempReadData, HEX);
       Serial.print(" ");
+
       memCounter++;
     }
     Serial.println();
