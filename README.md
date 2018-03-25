@@ -33,7 +33,7 @@ Documentation
 
 * **[Installing an Arduino Library Guide](https://learn.sparkfun.com/tutorials/installing-an-arduino-library)** - Basic information on how to install an Arduino library.
 * **[Product Repository](https://github.com/sparkfun/BME280-Breakout-Board)** - Main repository (including hardware files) for the SparkFun BME280 Breakout.
-* **[Hookup Guide](https://learn.sparkfun.com/tutorials/bme280-breakout-hookup-guide)** - Basic hookup guide for the SparkFun BME280 Breakout.
+* **[Hookup Guide](https://learn.sparkfun.com/tutorials/sparkfun-bme280-breakout-hookup-guide)** - Basic hookup guide for the SparkFun BME280 Breakout.
 
 Products that use this Library 
 ---------------------------------
