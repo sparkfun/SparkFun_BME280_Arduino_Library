@@ -12,10 +12,10 @@
   https://www.sparkfun.com/products/13676 - BME280 Breakout Board
 */
 
-#include "Wire.h"
+#include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor; //Global sensor object
+BME280 mySensor;
 
 unsigned long sampleNumber = 0;
 

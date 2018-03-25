@@ -13,13 +13,6 @@
   This sketch configures a BME280 to measure height changes, with a button
   to zero the local relative altitude.
 
-  Hardware connections:
-  BME280 -> Arduino
-  GND -> GND
-  3.3 -> 3.3
-  SDA -> A4
-  SCL -> A5
-
   To use, run the sketch then press a button on the keyboard. The data on the
   serial monitor will show zero.  Then, move the sensor to a new altitude and watch
   how the output changes!
@@ -27,25 +20,16 @@
   Note: For most accurate results keep the sensor orientation and temperature the
   same between measurements.
 
-  Resources:
-  Uses Wire.h for I2C operation
-  Uses SPI.h for SPI operation
-  Included CircularBuffer class for averaging
-
-  Development environment specifics:
-  Arduino IDE 1.6.4
-  Teensy loader 1.23
-
   This code is released under the [MIT License](http://opensource.org/licenses/MIT).
   Please review the LICENSE.md file included with this example. If you have any questions
   or concerns with licensing, please contact techsupport@sparkfun.com.
   Distributed as-is; no warranty is given.
 */
 
-#include "Wire.h"
+#include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor; //Global sensor object
+BME280 mySensor;
 
 #include "CircularBuffer.h"
 

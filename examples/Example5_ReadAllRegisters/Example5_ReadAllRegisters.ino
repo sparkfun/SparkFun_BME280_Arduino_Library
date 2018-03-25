@@ -16,10 +16,10 @@
   calibration words to be.
 */
 
-#include "Wire.h"
+#include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor; //Global sensor object
+BME280 mySensor;
 
 void setup()
 {
