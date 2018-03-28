@@ -564,7 +564,6 @@ void BME280::readRegisterRegion(uint8_t *outputPointer , uint8_t offset, uint8_t
 	default:
 		break;
 	}
-
 }
 
 uint8_t BME280::readRegister(uint8_t offset)
