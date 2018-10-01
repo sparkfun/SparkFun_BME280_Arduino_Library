@@ -321,17 +321,28 @@ uint8_t BME280::checkSampleValue(uint8_t userValue)
 {
 	switch(userValue) 
 	{
-		case(0): break; //Valid
-		case(1): break; //Valid
-		case(2): break; //Valid
-		case(4): break; //Valid
-		case(8): break; //Valid
-		case(16): break; //Valid
+		case(0): 
+			return 0;
+			break; //Valid
+		case(1): 
+			return 1;
+			break; //Valid
+		case(2): 
+			return 2;
+			break; //Valid
+		case(4): 
+			return 3;
+			break; //Valid
+		case(8): 
+			return 4;
+			break; //Valid
+		case(16): 
+			return 5;
+			break; //Valid
 		default: 
-			userValue = 1; //Default to 1x
+			return 1; //Default to 1x
 			break; //Good
 	}
-	return(userValue);	
 }
 
 //Set the global setting for the I2C address we want to communicate with
