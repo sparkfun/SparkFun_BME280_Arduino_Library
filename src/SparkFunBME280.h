@@ -158,7 +158,7 @@ struct SensorCalibration
 	
 };
 
-//This is the man operational class of the driver.
+//This is the main operational class of the driver.
 
 class BME280
 {
@@ -213,6 +213,11 @@ class BME280
     float readTempC( void );
     float readTempF( void );
 
+	//Dewpoint related methods
+	//From Pavel-Sayekat: https://github.com/sparkfun/SparkFun_BME280_Breakout_Board/pull/6/files
+    double dewPointC(void);
+    double dewPointF(void);
+	
     //The following utilities read and write
 
 	//ReadRegisterRegion takes a uint8 array address as input and reads
