@@ -418,7 +418,8 @@ float BME280::readFloatAltitudeMeters( void )
 {
 	float heightOutput = 0;
 	
-	heightOutput = ((float)-45846.2)*(pow(((float)readFloatPressure()/(float)_referencePressure), 0.190263) - (float)1);
+	//heightOutput = ((float)-45846.2)*(pow(((float)readFloatPressure()/(float)_referencePressure), 0.190263) - (float)1);
+	heightOutput = ((float)-44330.77)*(pow(((float)readFloatPressure()/(float)_referencePressure), 0.190263) - (float)1); //Corrected, see issue 30
 	return heightOutput;
 	
 }
