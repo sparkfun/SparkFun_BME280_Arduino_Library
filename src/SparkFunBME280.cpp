@@ -55,7 +55,7 @@ BME280::BME280( void )
 //
 //  Configuration section
 //
-//  This uses the stored SensorSettings to start the IMU
+//  This uses the stored BME280_SensorSettings to start the IMU
 //  Use statements such as "mySensor.settings.commInterface = SPI_MODE;" to 
 //  configure before calling .begin();
 //
