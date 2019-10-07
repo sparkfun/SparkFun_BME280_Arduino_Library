@@ -19,6 +19,10 @@ It also provides the following mathematical functions based from the above.
 
 Some examples include a circular buffer class for averaging.
 
+Thanks to:
+* calvin1564 for [fixing a name collision](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/pull/34)
+* LukaHitH for adding [BMP280 support](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/pull/23)
+
 Repository Contents
 -------------------
 
