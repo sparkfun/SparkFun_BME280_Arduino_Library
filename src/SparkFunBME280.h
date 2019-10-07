@@ -102,17 +102,17 @@ TODO:
 #define BME280_HUMIDITY_MSB_REG			0xFD //Humidity MSB
 #define BME280_HUMIDITY_LSB_REG			0xFE //Humidity LSB
 
-//Class SensorSettings.  This object is used to hold settings data.  The application
+//Class BME280_SensorSettings.  This object is used to hold settings data.  The application
 //uses this classes' data directly.  The settings are adopted and sent to the sensor
 //at special times, such as .begin.  Some are used for doing math.
 //
 //This is a kind of bloated way to do this.  The trade-off is that the user doesn't
 //need to deal with #defines or enums with bizarre names.
 //
-//A power user would strip out SensorSettings entirely, and send specific read and
+//A power user would strip out BME280_SensorSettings entirely, and send specific read and
 //write command directly to the IC. (ST #defines below)
 //
-struct SensorSettings
+struct BME280_SensorSettings
 {
   public:
 	
@@ -165,16 +165,16 @@ class BME280
 {
   public:
     //settings
-    SensorSettings settings;
+    BME280_SensorSettings settings;
 	SensorCalibration calibration;
 	int32_t t_fine;
 	
-	//Constructor generates default SensorSettings.
+	//Constructor generates default BME280_SensorSettings.
 	//(over-ride after construction if desired)
     BME280( void );
     //~BME280() = default;
 	
-	//Call to apply SensorSettings.
+	//Call to apply BME280_SensorSettings.
 	//This also gets the SensorCalibration constants
     uint8_t begin( void );
     bool beginSPI(uint8_t csPin); //Communicate using SPI
