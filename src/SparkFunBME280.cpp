@@ -159,8 +159,10 @@ bool BME280::beginSPI(uint8_t csPin)
 	settings.chipSelectPin = csPin;
 	settings.commInterface = SPI_MODE;
 	
-	if(begin() == 0x58) return(true); //Begin normal init with these settings. Should return chip ID of 0x58 for BMP
-	if(begin() == 0x60) return(true); //Begin normal init with these settings. Should return chip ID of 0x60 for BME
+	uint8_t chipID = begin();
+
+	if(chipID == 0x58) return(true); //Begin normal init with these settings. Should return chip ID of 0x58 for BMP
+	if(chipID == 0x60) return(true); //Begin normal init with these settings. Should return chip ID of 0x60 for BME
 	return(false);
 }
 
@@ -171,10 +173,12 @@ bool BME280::beginI2C(TwoWire &wirePort)
 	_wireType = HARD_WIRE;
 
 	settings.commInterface = I2C_MODE;
-	
 	//settings.I2CAddress = 0x77; //We assume user has set the I2C address using setI2CAddress()
-	if(begin() == 0x58) return(true); //Begin normal init with these settings. Should return chip ID of 0x58 for BMP
-	if(begin() == 0x60) return(true); //Begin normal init with these settings. Should return chip ID of 0x60 for BME
+
+	uint8_t chipID = begin();
+
+	if(chipID == 0x58) return(true); //Begin normal init with these settings. Should return chip ID of 0x58 for BMP
+	if(chipID == 0x60) return(true); //Begin normal init with these settings. Should return chip ID of 0x60 for BME
 	return(false);
 }
 
@@ -188,8 +192,10 @@ bool BME280::beginI2C(SoftwareWire& wirePort)
 	settings.commInterface = I2C_MODE;
 	//settings.I2CAddress = 0x77; //We assume user has set the I2C address using setI2CAddress()
 
-	if(begin() == 0x58) return(true); //Begin normal init with these settings. Should return chip ID of 0x58 for BMP
-	if(begin() == 0x60) return(true); //Begin normal init with these settings. Should return chip ID of 0x60 for BME
+	uint8_t chipID = begin();
+
+	if(chipID == 0x58) return(true); //Begin normal init with these settings. Should return chip ID of 0x58 for BMP
+	if(chipID == 0x60) return(true); //Begin normal init with these settings. Should return chip ID of 0x60 for BME
 	return(false);
 }
 #endif
