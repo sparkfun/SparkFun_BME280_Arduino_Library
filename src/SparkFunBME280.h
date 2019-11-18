@@ -46,6 +46,18 @@ TODO:
 #define I2C_MODE 0
 #define SPI_MODE 1
 
+#ifndef BME280_SPI_CLOCK
+#ifdef ARDUINO_ARCH_ESP32
+#define BME280_SPI_CLOCK 1000000
+#else
+#define BME280_SPI_CLOCK 500000
+#endif
+#endif
+
+#ifndef BME280_SPI_MODE
+#define BME280_SPI_MODE SPI_MODE0
+#endif
+
 #define NO_WIRE 0
 #define HARD_WIRE 1
 #define SOFT_WIRE 2
@@ -120,7 +132,8 @@ struct BME280_SensorSettings
     uint8_t commInterface;
     uint8_t I2CAddress;
     uint8_t chipSelectPin;
-	
+	SPISettings spiSettings{BME280_SPI_CLOCK, MSBFIRST, BME280_SPI_MODE};
+
 	//Deprecated settings
 	uint8_t runMode;
 	uint8_t tStandby;

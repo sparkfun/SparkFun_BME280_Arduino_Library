@@ -86,24 +86,6 @@ uint8_t BME280::begin()
 	case SPI_MODE:
 		// start the SPI library:
 		SPI.begin();
-		#ifdef ARDUINO_ARCH_ESP32
-		SPI.setFrequency(1000000);
-		// Data is read and written MSb first.
-		SPI.setBitOrder(SPI_MSBFIRST);
-		// Like the standard arduino/teensy comment below, mode0 seems wrong according to standards
-		// but conforms to the timing diagrams when used for the ESP32
-		SPI.setDataMode(SPI_MODE0);
-		#else
-		// Maximum SPI frequency is 10MHz, could divide by 2 here:
-		SPI.setClockDivider(SPI_CLOCK_DIV32);
-		// Data is read and written MSb first.
-		SPI.setBitOrder(MSBFIRST);
-		// Data is captured on rising edge of clock (CPHA = 0)
-		// Base value of the clock is HIGH (CPOL = 1)
-		// This was SPI_MODE3 for RedBoard, but I had to change to
-		// MODE0 for Teensy 3.1 operation
-		SPI.setDataMode(SPI_MODE3);
-		#endif
 		// initialize the  data ready and chip select pins:
 		pinMode(settings.chipSelectPin, OUTPUT);
 		digitalWrite(settings.chipSelectPin, HIGH);
@@ -586,6 +568,7 @@ void BME280::readRegisterRegion(uint8_t *outputPointer , uint8_t offset, uint8_t
 		break;
 
 	case SPI_MODE:
+		SPI.beginTransaction(settings.spiSettings);
 		// take the chip select low to select the device:
 		digitalWrite(settings.chipSelectPin, LOW);
 		// send the device the register you want to read:
@@ -599,6 +582,7 @@ void BME280::readRegisterRegion(uint8_t *outputPointer , uint8_t offset, uint8_t
 		}
 		// take the chip select high to de-select:
 		digitalWrite(settings.chipSelectPin, HIGH);
+		SPI.endTransaction();
 		break;
 
 	default:
@@ -647,14 +631,7 @@ uint8_t BME280::readRegister(uint8_t offset)
 		break;
 
 	case SPI_MODE:
-		// take the chip select low to select the device:
-		digitalWrite(settings.chipSelectPin, LOW);
-		// send the device the register you want to read:
-		SPI.transfer(offset | 0x80);  //Ored with "read request" bit
-		// send a value of 0 to read the first byte returned:
-		result = SPI.transfer(0x00);
-		// take the chip select high to de-select:
-		digitalWrite(settings.chipSelectPin, HIGH);
+		readRegisterRegion(&result, offset, 1);
 		break;
 
 	default:
@@ -699,6 +676,7 @@ void BME280::writeRegister(uint8_t offset, uint8_t dataToWrite)
 		break;
 		
 	case SPI_MODE:
+		SPI.beginTransaction(settings.spiSettings);
 		// take the chip select low to select the device:
 		digitalWrite(settings.chipSelectPin, LOW);
 		// send the device the register you want to read:
@@ -708,6 +686,7 @@ void BME280::writeRegister(uint8_t offset, uint8_t dataToWrite)
 		// decrement the number of bytes left to read:
 		// take the chip select high to de-select:
 		digitalWrite(settings.chipSelectPin, HIGH);
+		SPI.endTransaction();
 		break;
 
 	default:
