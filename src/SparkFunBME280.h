@@ -223,7 +223,8 @@ class BME280
 	
 	float readFloatHumidity( void );
 
-	//Temperature related methods
+    //Temperature related methods
+    void setTemperatureCorrection(float corr);
     float readTempC( void );
     float readTempF( void );
 
