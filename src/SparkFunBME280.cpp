@@ -47,7 +47,7 @@ BME280::BME280( void )
 	settings.tempOverSample = 1;
 	settings.pressOverSample = 1;
 	settings.humidOverSample = 1;
-    settings.tempCorrection = 0.0; // correction of temperature - added to the result
+	settings.tempCorrection = 0.f; // correction of temperature - added to the result
 }
 
 
@@ -452,6 +452,11 @@ float BME280::readFloatHumidity( void )
 //  Temperature Section
 //
 //****************************************************************************//
+
+void BME280::setTemperatureCorrection(float corr)
+{
+	settings.tempCorrection = corr;
+}
 
 float BME280::readTempC( void )
 {
