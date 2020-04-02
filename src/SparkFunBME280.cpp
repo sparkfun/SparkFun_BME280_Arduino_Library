@@ -41,9 +41,8 @@ BME280::BME280( void )
 #endif
 
 #ifndef _SPARKFUNBME280_NO_SPI
-#ifndef _SPARKFUNBME280_NO_I2C
-  settings.commInterface = SPI_MODE;  // Default to SPI
-#endif
+	settings.commInterface = SPI_MODE;  // Default to SPI
+
 	settings.chipSelectPin = 10; //Select CS pin for SPI
 #endif
 
