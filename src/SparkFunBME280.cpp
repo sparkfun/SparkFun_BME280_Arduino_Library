@@ -37,7 +37,11 @@ BME280::BME280( void )
 	settings.commInterface = I2C_MODE; //Default to I2C
 
 	settings.I2CAddress = 0x77; //Default, jumper open is 0x77
+#if !defined(NO_GLOBAL_INSTANCES) && !defined(NO_GLOBAL_TWOWIRE)
 	_hardPort = &Wire; //Default to Wire port
+#else
+	_hardPort = NO_WIRE; //Default to Wire port
+#endif
 #endif
 
 #ifndef _SPARKFUNBME280_NO_SPI

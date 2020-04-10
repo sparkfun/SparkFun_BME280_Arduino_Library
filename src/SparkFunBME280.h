@@ -224,7 +224,12 @@ class BME280
 #endif
 
 #ifndef _SPARKFUNBME280_NO_I2C
+
+#if !defined(NO_GLOBAL_INSTANCES) && !defined(NO_GLOBAL_TWOWIRE)
     bool beginI2C(TwoWire &wirePort = Wire); //Called when user provides Wire port
+#else
+    bool beginI2C(TwoWire &wirePort); //Called when user provides Wire port
+#endif
 
 	#ifdef SoftwareWire_h
 	bool beginI2C(SoftwareWire &wirePort); //Called when user provides a softwareWire port
