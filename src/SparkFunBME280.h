@@ -14,7 +14,7 @@ Arduino IDE 1.6.4
 Teensy loader 1.23
 
 This code is released under the [MIT License](http://opensource.org/licenses/MIT).
-Please review the LICENSE.md file included with this example. If you have any questions 
+Please review the LICENSE.md file included with this example. If you have any questions
 or concerns with licensing, please contact techsupport@sparkfun.com.
 Distributed as-is; no warranty is given.
 
@@ -36,16 +36,33 @@ TODO:
 #include "WProgram.h"
 #endif
 
+// Uncomment or use -D flag to disable compile of SPI code segments.
+// #define _SPARKFUNBME280_NO_SPI
+
+// Uncomment or use -D flag to disable compile of I2C code segments.
+// #define _SPARKFUNBME280_NO_I2C
+
+#ifndef _SPARKFUNBME280_NO_I2C
 #include <Wire.h>
+#endif
+
+#ifndef _SPARKFUNBME280_NO_SPI
 #include <SPI.h>
+#endif
 
 //Uncomment the following line to enable software I2C
 //You will need to have the SoftwareWire library installed
 //#include <SoftwareWire.h> //SoftwareWire by Testato. Installed from library manager.
 
+#ifndef _SPARKFUNBME280_NO_I2C
 #define I2C_MODE 0
-#define SPI_MODE 1
+#endif
 
+#ifndef _SPARKFUNBME280_NO_SPI
+#define SPI_MODE 1
+#endif
+
+#ifndef _SPARKFUNBME280_NO_SPI
 #ifndef BME280_SPI_CLOCK
 #ifdef ARDUINO_ARCH_ESP32
 #define BME280_SPI_CLOCK 1000000
@@ -54,13 +71,18 @@ TODO:
 #endif
 #endif
 
+#ifndef _SPARKFUNBME280_NO_SPI
 #ifndef BME280_SPI_MODE
 #define BME280_SPI_MODE SPI_MODE0
 #endif
+#endif
+#endif
 
+#ifndef _SPARKFUNBME280_NO_I2C
 #define NO_WIRE 0
 #define HARD_WIRE 1
 #define SOFT_WIRE 2
+#endif
 
 #define MODE_SLEEP 0b00
 #define MODE_FORCED 0b01
@@ -127,12 +149,18 @@ TODO:
 struct BME280_SensorSettings
 {
   public:
-	
+
 	//Main Interface and mode settings
     uint8_t commInterface;
+
+#ifndef _SPARKFUNBME280_NO_I2C
     uint8_t I2CAddress;
+#endif
+
+#ifndef _SPARKFUNBME280_NO_SPI
     uint8_t chipSelectPin;
-	SPISettings spiSettings{BME280_SPI_CLOCK, MSBFIRST, BME280_SPI_MODE};
+    SPISettings spiSettings {BME280_SPI_CLOCK, MSBFIRST, BME280_SPI_MODE};
+#endif
 
 	//Deprecated settings
 	uint8_t runMode;
@@ -152,7 +180,7 @@ struct SensorCalibration
 	uint16_t dig_T1;
 	int16_t dig_T2;
 	int16_t dig_T3;
-	
+
 	uint16_t dig_P1;
 	int16_t dig_P2;
 	int16_t dig_P3;
@@ -162,14 +190,14 @@ struct SensorCalibration
 	int16_t dig_P7;
 	int16_t dig_P8;
 	int16_t dig_P9;
-	
+
 	uint8_t dig_H1;
 	int16_t dig_H2;
 	uint8_t dig_H3;
 	int16_t dig_H4;
 	int16_t dig_H5;
 	int8_t dig_H6;
-	
+
 };
 
 //This is the main operational class of the driver.
@@ -181,21 +209,27 @@ class BME280
     BME280_SensorSettings settings;
 	SensorCalibration calibration;
 	int32_t t_fine;
-	
+
 	//Constructor generates default BME280_SensorSettings.
 	//(over-ride after construction if desired)
     BME280( void );
     //~BME280() = default;
-	
+
 	//Call to apply BME280_SensorSettings.
 	//This also gets the SensorCalibration constants
     uint8_t begin( void );
+
+#ifndef _SPARKFUNBME280_NO_SPI
     bool beginSPI(uint8_t csPin); //Communicate using SPI
+#endif
+
+#ifndef _SPARKFUNBME280_NO_I2C
     bool beginI2C(TwoWire &wirePort = Wire); //Called when user provides Wire port
-    
+
 	#ifdef SoftwareWire_h
 	bool beginI2C(SoftwareWire &wirePort); //Called when user provides a softwareWire port
 	#endif
+#endif
 
 	uint8_t getMode(void); //Get the current mode: sleep, forced, or normal
 	void setMode(uint8_t mode); //Set the current mode
@@ -205,22 +239,24 @@ class BME280
 	void setHumidityOverSample(uint8_t overSampleAmount); //Set the humidity sample mode
 	void setStandbyTime(uint8_t timeSetting); //Set the standby time between measurements
 	void setFilter(uint8_t filterSetting); //Set the filter
-	
+
+#ifndef _SPARKFUNBME280_NO_I2C
 	void setI2CAddress(uint8_t i2caddress); //Set the address the library should use to communicate. Use if address jumper is closed (0x76).
+#endif
 
 	void setReferencePressure(float refPressure); //Allows user to set local sea level reference pressure
 	float getReferencePressure();
-	
+
 	bool isMeasuring(void); //Returns true while the device is taking measurement
-	
+
 	//Software reset routine
 	void reset( void );
-	
+
     //Returns the values as floats.
     float readFloatPressure( void );
 	float readFloatAltitudeMeters( void );
 	float readFloatAltitudeFeet( void );
-	
+
 	float readFloatHumidity( void );
 
     //Temperature related methods
@@ -232,7 +268,7 @@ class BME280
 	//From Pavel-Sayekat: https://github.com/sparkfun/SparkFun_BME280_Breakout_Board/pull/6/files
     double dewPointC(void);
     double dewPointF(void);
-	
+
     //The following utilities read and write
 
 	//ReadRegisterRegion takes a uint8 array address as input and reads
@@ -249,13 +285,15 @@ class BME280
 private:
 	uint8_t checkSampleValue(uint8_t userValue); //Checks for valid over sample values
 
+#ifndef _SPARKFUNBME280_NO_I2C
     uint8_t _wireType = HARD_WIRE; //Default to Wire.h
     TwoWire *_hardPort = NO_WIRE; //The generic connection to user's chosen I2C hardware
-    
+
 	#ifdef SoftwareWire_h
 	SoftwareWire *_softPort = NO_WIRE; //Or, the generic connection to software wire port
 	#endif
-	
+#endif
+
 	float _referencePressure = 101325.0; //Default but is changeable
 };
 
