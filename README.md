@@ -36,12 +36,16 @@ Documentation
 --------------
 
 * **[Installing an Arduino Library Guide](https://learn.sparkfun.com/tutorials/installing-an-arduino-library)** - Basic information on how to install an Arduino library.
-* **[Product Repository](https://github.com/sparkfun/BME280-Breakout-Board)** - Main repository (including hardware files) for the SparkFun BME280 Breakout.
+* **Product Repositories:** (including hardware files)
+  * [SparkFun BME280 Breakout](https://github.com/sparkfun/BME280-Breakout-Board) - Original product repository
+  * [SparkFun Environmental Combo Breakout - CCS811/BME280 (Qwiic)](https://www.sparkfun.com/products/14348)
+  * [SparkFun Atmospheric Sensor Breakout - BME280 (Qwiic)](https://github.com/sparkfun/Qwiic_Atmospheric_Sensor_Breakout_BME280)
 * **[Hookup Guide](https://learn.sparkfun.com/tutorials/sparkfun-bme280-breakout-hookup-guide)** - Basic hookup guide for the SparkFun BME280 Breakout.
 
 Products that use this Library 
 ---------------------------------
 
+* [*SEN-15440*](https://www.sparkfun.com/products/15440)
 * [*SEN-14348*](https://www.sparkfun.com/products/14348)
 * [*SEN-13676*](https://www.sparkfun.com/products/13676)
 
