@@ -71,17 +71,18 @@ uint8_t BME280::begin()
 
 	case I2C_MODE:
 		
-		switch(_wireType)
-		{
-			case(HARD_WIRE):
-				_hardPort->begin(); //The caller can begin their port and set the speed. We just confirm it here otherwise it can be hard to debug.
-				break;
-			case(SOFT_WIRE):
-			#ifdef SoftwareWire_h
-				_softPort->begin(); //The caller can begin their port and set the speed. We just confirm it here otherwise it can be hard to debug.
-			#endif
-				break;
-		}
+		//Removing port begin from library. This should be done by user otherwise this library will overwrite Wire settings such as clock speed.
+		// switch(_wireType)
+		// {
+		// 	case(HARD_WIRE):
+		// 		_hardPort->begin(); //The caller can begin their port and set the speed. We just confirm it here otherwise it can be hard to debug.
+		// 		break;
+		// 	case(SOFT_WIRE):
+		// 	#ifdef SoftwareWire_h
+		// 		_softPort->begin(); //The caller can begin their port and set the speed. We just confirm it here otherwise it can be hard to debug.
+		// 	#endif
+		// 		break;
+		// }
 		break;
 
 	case SPI_MODE:
