@@ -23,7 +23,7 @@ BME280 mySensor;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   while(!Serial); //Needed for printing correctly when using a Teensy
   Serial.println("Reading all registers from BME280");
 

@@ -41,7 +41,7 @@ float localAltitude = 0;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   while(!Serial); //Wait for user to get terminal open
   Serial.println("Output a local changing altitude");
   Serial.println("Press any key to zero local altitude");

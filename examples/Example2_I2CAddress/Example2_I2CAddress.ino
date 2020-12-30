@@ -27,7 +27,7 @@ BME280 mySensorB; //Uses I2C address 0x76 (jumper closed)
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Example showing alternate I2C addresses");
 
   Wire.begin();

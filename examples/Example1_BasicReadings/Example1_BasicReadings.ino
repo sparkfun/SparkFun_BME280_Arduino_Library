@@ -26,7 +26,7 @@ BME280 mySensor;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Reading basic values from BME280");
 
   Wire.begin();

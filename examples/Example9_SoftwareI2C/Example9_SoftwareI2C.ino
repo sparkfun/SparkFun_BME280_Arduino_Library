@@ -31,7 +31,7 @@ BME280 mySensor;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Example showing alternate I2C addresses");
 
   myWire.begin();
