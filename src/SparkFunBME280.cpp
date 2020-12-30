@@ -20,6 +20,7 @@ Distributed as-is; no warranty is given.
 ******************************************************************************/
 //See SparkFunBME280.h for additional topology notes.
 
+#include <math.h>
 #include "SparkFunBME280.h"
 
 //****************************************************************************//
