@@ -22,6 +22,8 @@ Some examples include a circular buffer class for averaging.
 Thanks to:
 * calvin1564 for [fixing a name collision](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/pull/34)
 * LukaHitH for adding [BMP280 support](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/pull/23)
+* cdonate for adding [burst read](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/pull/50)
+* jdavid for integrating [math.h](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/pull/49)
 
 Repository Contents
 -------------------
