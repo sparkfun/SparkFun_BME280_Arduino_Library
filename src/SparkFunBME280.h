@@ -105,6 +105,7 @@ TODO:
 #define BME280_STAT_REG					0xF3 //Status Reg
 #define BME280_CTRL_MEAS_REG			0xF4 //Ctrl Measure Reg
 #define BME280_CONFIG_REG				0xF5 //Configuration Reg
+#define BME280_MEASUREMENTS_REG			0xF7 //Measurements register start
 #define BME280_PRESSURE_MSB_REG			0xF7 //Pressure MSB
 #define BME280_PRESSURE_LSB_REG			0xF8 //Pressure LSB
 #define BME280_PRESSURE_XLSB_REG		0xF9 //Pressure XLSB
@@ -172,6 +173,14 @@ struct SensorCalibration
 	
 };
 
+struct BME280_SensorMeasurements
+{
+  public:
+	float temperature;
+	float pressure;
+	float humidity;
+};
+
 //This is the main operational class of the driver.
 
 class BME280
@@ -215,18 +224,22 @@ class BME280
 	
 	//Software reset routine
 	void reset( void );
+		void readAllMeasurements(BME280_SensorMeasurements *measurements, byte tempScale = 0);
 	
     //Returns the values as floats.
     float readFloatPressure( void );
 	float readFloatAltitudeMeters( void );
 	float readFloatAltitudeFeet( void );
+		void readFloatPressureFromBurst(uint8_t buffer[], BME280_SensorMeasurements *measurements);
 	
 	float readFloatHumidity( void );
+		void readFloatHumidityFromBurst(uint8_t buffer[], BME280_SensorMeasurements *measurements);
 
     //Temperature related methods
     void setTemperatureCorrection(float corr);
     float readTempC( void );
     float readTempF( void );
+		float readTempFromBurst(uint8_t buffer[]);
 
 	//Dewpoint related methods
 	//From Pavel-Sayekat: https://github.com/sparkfun/SparkFun_BME280_Breakout_Board/pull/6/files
@@ -248,6 +261,8 @@ class BME280
 
 private:
 	uint8_t checkSampleValue(uint8_t userValue); //Checks for valid over sample values
+	void readTempCFromBurst(uint8_t buffer[], BME280_SensorMeasurements *measurements);
+	void readTempFFromBurst(uint8_t buffer[], BME280_SensorMeasurements *measurements);
 
     uint8_t _wireType = HARD_WIRE; //Default to Wire.h
     TwoWire *_hardPort = NO_WIRE; //The generic connection to user's chosen I2C hardware
