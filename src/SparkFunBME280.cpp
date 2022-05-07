@@ -366,7 +366,7 @@ void BME280::reset( void )
 //Read all sensor registers as a burst. See BME280 Datasheet section 4. Data readout
 //tempScale = 0 for Celsius scale (default setting)
 //tempScale = 1 for Fahrenheit scale
-void BME280::readAllMeasurements(BME280_SensorMeasurements *measurements, byte tempScale){
+void BME280::readAllMeasurements(BME280_SensorMeasurements *measurements, uint8_t tempScale){
 	
 	uint8_t dataBurst[8];
 	readRegisterRegion(dataBurst, BME280_MEASUREMENTS_REG, 8);

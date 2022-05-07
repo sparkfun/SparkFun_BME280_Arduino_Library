@@ -224,7 +224,7 @@ class BME280
 	
 	//Software reset routine
 	void reset( void );
-		void readAllMeasurements(BME280_SensorMeasurements *measurements, byte tempScale = 0);
+	void readAllMeasurements(BME280_SensorMeasurements *measurements, uint8_t tempScale = 0);
 	
     //Returns the values as floats.
     float readFloatPressure( void );
