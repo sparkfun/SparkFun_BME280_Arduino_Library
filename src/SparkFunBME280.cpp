@@ -475,6 +475,11 @@ float BME280::readFloatAltitudeMeters( void )
   // see NRLMSISE-00. That's why it is the "international" formula, not "interplanetary".
   // Sparkfun is not liable for incorrect altitude calculations from this
   // code on those planets. Interplanetary selfies are welcome, however.
+	
+	// firstly read temperature for avoiding wrong calculation
+	readFloatPressure();
+	readTempC();
+	
 	heightOutput = ((float)-44330.77)*(pow(((float)readFloatPressure()/(float)_referencePressure), 0.190263) - (float)1); //Corrected, see issue 30
 	return heightOutput;
 	
