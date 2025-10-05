@@ -58,7 +58,7 @@ TODO:
 #define BME280_SPI_MODE SPI_MODE0
 #endif
 
-#define NO_WIRE nullptr
+#define NO_WIRE 0
 #define HARD_WIRE 1
 #define SOFT_WIRE 2
 
@@ -265,11 +265,11 @@ private:
 	void readTempFFromBurst(uint8_t buffer[], BME280_SensorMeasurements *measurements);
 
     uint8_t _wireType = HARD_WIRE; //Default to Wire.h
-    TwoWire *_hardPort = nullptr; //The generic connection to user's chosen I2C hardware
+    TwoWire *_hardPort = NO_WIRE; //The generic connection to user's chosen I2C hardware
 	SPIClass *_spiPort = &SPI; //The generic connection to user's chosen SPI hardware
     
 	#ifdef SoftwareWire_h
-	SoftwareWire *_softPort = nullptr; //Or, the generic connection to software wire port
+	SoftwareWire *_softPort = NO_WIRE; //Or, the generic connection to software wire port
 	#endif
 	
 	float _referencePressure = 101325.0; //Default but is changeable
