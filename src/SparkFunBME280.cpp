@@ -7,7 +7,7 @@ https://github.com/sparkfun/BME280_Breakout
 
 Resources:
 Uses Wire.h for i2c operation
-Uses SPI.h for SPI operation
+Uses _spiPort->h for SPI operation
 
 Development environment specifics:
 Arduino IDE 1.8.5
@@ -87,7 +87,7 @@ uint8_t BME280::begin()
 
 	case SPI_MODE:
 		// start the SPI library:
-		SPI.begin();
+		_spiPort->begin();
 		// initialize the  data ready and chip select pins:
 		pinMode(settings.chipSelectPin, OUTPUT);
 		digitalWrite(settings.chipSelectPin, HIGH);
@@ -138,8 +138,9 @@ uint8_t BME280::begin()
 }
 
 //Begin comm with BME280 over SPI
-bool BME280::beginSPI(uint8_t csPin)
+bool BME280::beginSPI(uint8_t csPin, SPIClass &spiPort)
 {
+	_spiPort = &spiPort;
 	settings.chipSelectPin = csPin;
 	settings.commInterface = SPI_MODE;
 	
@@ -691,21 +692,21 @@ void BME280::readRegisterRegion(uint8_t *outputPointer , uint8_t offset, uint8_t
 		break;
 
 	case SPI_MODE:
-		SPI.beginTransaction(settings.spiSettings);
+		_spiPort->beginTransaction(settings.spiSettings);
 		// take the chip select low to select the device:
 		digitalWrite(settings.chipSelectPin, LOW);
 		// send the device the register you want to read:
-		SPI.transfer(offset | 0x80);  //Ored with "read request" bit
+		_spiPort->transfer(offset | 0x80);  //Ored with "read request" bit
 		while ( i < length ) // slave may send less than requested
 		{
-			c = SPI.transfer(0x00); // receive a byte as character
+			c = _spiPort->transfer(0x00); // receive a byte as character
 			*outputPointer = c;
 			outputPointer++;
 			i++;
 		}
 		// take the chip select high to de-select:
 		digitalWrite(settings.chipSelectPin, HIGH);
-		SPI.endTransaction();
+		_spiPort->endTransaction();
 		break;
 
 	default:
@@ -799,17 +800,17 @@ void BME280::writeRegister(uint8_t offset, uint8_t dataToWrite)
 		break;
 		
 	case SPI_MODE:
-		SPI.beginTransaction(settings.spiSettings);
+		_spiPort->beginTransaction(settings.spiSettings);
 		// take the chip select low to select the device:
 		digitalWrite(settings.chipSelectPin, LOW);
 		// send the device the register you want to read:
-		SPI.transfer(offset & 0x7F);
+		_spiPort->transfer(offset & 0x7F);
 		// send a value of 0 to read the first byte returned:
-		SPI.transfer(dataToWrite);
+		_spiPort->transfer(dataToWrite);
 		// decrement the number of bytes left to read:
 		// take the chip select high to de-select:
 		digitalWrite(settings.chipSelectPin, HIGH);
-		SPI.endTransaction();
+		_spiPort->endTransaction();
 		break;
 
 	default:
