@@ -22,8 +22,8 @@
 #include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensorA; //Uses default I2C address 0x77
-BME280 mySensorB; //Uses I2C address 0x76 (jumper closed)
+SparkFunBME280I2C mySensorA; //Uses default I2C address 0x77
+SparkFunBME280I2C mySensorB; //Uses I2C address 0x76 (jumper closed)
 
 void setup()
 {
@@ -32,14 +32,11 @@ void setup()
 
   Wire.begin();
 
-  mySensorA.setI2CAddress(0x77); //The default for the SparkFun Environmental Combo board is 0x77 (jumper open).
   //If you close the jumper it is 0x76
-  //The I2C address must be set before .begin() otherwise the cal values will fail to load.
 
-  if(mySensorA.beginI2C() == false) Serial.println("Sensor A connect failed");
+  if(mySensorA.begin(0x77) == false) Serial.println("Sensor A connect failed");
 
-  mySensorB.setI2CAddress(0x76); //Connect to a second sensor
-  if(mySensorB.beginI2C() == false) Serial.println("Sensor B connect failed");
+  if(mySensorB.begin(0x76) == false) Serial.println("Sensor B connect failed");
 }
 
 void loop()

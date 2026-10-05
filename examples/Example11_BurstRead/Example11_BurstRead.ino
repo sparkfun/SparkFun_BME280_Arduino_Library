@@ -26,7 +26,7 @@
 #define CELSIUS_SCALE 0 //Default
 #define FAHRENHEIT_SCALE 1
 
-BME280 mySensor;
+SparkFunBME280I2C mySensor;
 BME280_SensorMeasurements measurements;
 
 void setup()
@@ -36,7 +36,7 @@ void setup()
 
   Wire.begin();
 
-  if (mySensor.beginI2C() == false) //Begin communication over I2C
+  if (mySensor.begin() == false) //Begin communication over I2C
   {
     Serial.println("The sensor did not respond. Please check wiring.");
     while(1); //Freeze

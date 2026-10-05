@@ -1,10 +1,15 @@
 ########################################################
-# Syntax Coloring Map for SparkFun LSM6DS3 IMU Library #
+# Syntax Coloring Map for SparkFun BME280 Library        #
 ########################################################
 # Class
 ###################################################################
 
 BME280	KEYWORD1
+SparkFunBME280I2C	KEYWORD1
+SparkFunBME280SPI	KEYWORD1
+sfDevBME280	KEYWORD1
+BME280_SensorMeasurements	KEYWORD1
+BME280_SensorSettings	KEYWORD1
 
 ###################################################################
 # Methods and Functions
@@ -19,10 +24,6 @@ readFloatAltitudeFeet	KEYWORD2
 readFloatHumidity	KEYWORD2
 readTempC	KEYWORD2
 readTempF	KEYWORD2
-readRegisterRegion	KEYWORD2
-readRegister	KEYWORD2
-readRegisterInt16	KEYWORD2
-writeRegister	KEYWORD2
 
 beginI2C	KEYWORD2
 setFilter	KEYWORD2
@@ -35,13 +36,23 @@ setHumidityOverSample	KEYWORD2
 setI2CAddress	KEYWORD2
 isMeasuring	KEYWORD2
 setReferencePressure	KEYWORD2
+getReferencePressure	KEYWORD2
+isConnected	KEYWORD2
+chipID	KEYWORD2
+readAllMeasurements	KEYWORD2
+setTemperatureCorrection	KEYWORD2
+dewPointC	KEYWORD2
+dewPointF	KEYWORD2
 
 ###################################################################
 # Constants
 ###################################################################
 
-I2C_MODE	LITERAL1
-SPI_MODE	LITERAL1
+MODE_SLEEP	LITERAL1
+MODE_FORCED	LITERAL1
+MODE_NORMAL	LITERAL1
+kBME280DefaultAddress	LITERAL1
+kBME280AlternateAddress	LITERAL1
 BME280_DIG_T1_LSB_REG	LITERAL1
 BME280_DIG_T1_MSB_REG	LITERAL1
 BME280_DIG_T2_LSB_REG	LITERAL1

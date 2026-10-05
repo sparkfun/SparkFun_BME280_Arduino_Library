@@ -15,7 +15,7 @@
 #include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor;
+SparkFunBME280I2C mySensor;
 
 unsigned long sampleNumber = 0;
 
@@ -25,7 +25,7 @@ void setup()
 
   Wire.begin();
 
-  if (mySensor.beginI2C() == false) //Begin communication over I2C
+  if (mySensor.begin() == false) //Begin communication over I2C
   {
     Serial.println("The sensor did not respond. Please check wiring.");
     while(1); //Freeze

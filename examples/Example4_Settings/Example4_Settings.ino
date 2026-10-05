@@ -13,7 +13,7 @@
 #include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor;
+SparkFunBME280I2C mySensor;
 
 void setup()
 {
@@ -23,7 +23,7 @@ void setup()
   Wire.begin();
   Wire.setClock(400000); //Increase to fast I2C speed!
 
-  mySensor.beginI2C();
+  mySensor.begin();
 
   mySensor.setFilter(1); //0 to 4 is valid. Filter coefficient. See 3.4.4
   mySensor.setStandbyTime(0); //0 to 7 valid. Time between readings. See table 27.

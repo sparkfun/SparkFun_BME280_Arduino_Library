@@ -14,12 +14,18 @@
   This sketch configures the BME280 to read all measurements.  The sketch also
   displays the BME280's physical memory and what the driver perceives the
   calibration words to be.
+
+  The raw registers are read using a SparkFun Toolkit I2C bus object that is
+  connected to the same device as the sensor object.
 */
 
 #include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor;
+SparkFunBME280I2C mySensor;
+
+// Toolkit I2C bus object used to read the raw registers of the device
+sfTkArdI2C myBus;
 
 void setup()
 {
@@ -29,23 +35,25 @@ void setup()
 
   Wire.begin();
 
-  if (mySensor.beginI2C() == false) //Begin communication over I2C
+  if (mySensor.begin() == false) //Begin communication over I2C
   {
     Serial.println("The sensor did not respond. Please check wiring.");
     while (1); //Freeze
   }
 
+  myBus.init(Wire, kBME280DefaultAddress);
+
   Serial.print("ID(0xD0): ");
-  printyPrintHex(mySensor.readRegister(BME280_CHIP_ID_REG));
+  printyPrintHex(readRegister(BME280_CHIP_ID_REG));
 
   Serial.print("Reset register(0xE0): ");
-  printyPrintHex(mySensor.readRegister(BME280_RST_REG));
+  printyPrintHex(readRegister(BME280_RST_REG));
 
   Serial.print("ctrl_meas(0xF4): ");
-  printyPrintHex(mySensor.readRegister(BME280_CTRL_MEAS_REG));
+  printyPrintHex(readRegister(BME280_CTRL_MEAS_REG));
 
   Serial.print("ctrl_hum(0xF2): ");
-  printyPrintHex(mySensor.readRegister(BME280_CTRL_HUMIDITY_REG));
+  printyPrintHex(readRegister(BME280_CTRL_HUMIDITY_REG));
 
   Serial.println();
 
@@ -59,7 +67,7 @@ void setup()
 
     for (byte column = 0 ; column < 16 ; column++)
     {
-      byte tempReadData = mySensor.readRegister(memCounter);
+      byte tempReadData = readRegister(memCounter);
 
       if(tempReadData < 0x10) Serial.print("0");
       Serial.print(tempReadData, HEX);
@@ -135,6 +143,15 @@ void loop()
   Serial.println();
 
   delay(1000);
+}
+
+//Read a single register from the device using the toolkit bus object. Returns 0 on error
+byte readRegister(byte reg)
+{
+  uint8_t value = 0;
+  if (myBus.readRegister(reg, value) != ksfTkErrOk)
+    return 0;
+  return value;
 }
 
 //Given a value, print it in HEX with leading 0x and any leading 0s

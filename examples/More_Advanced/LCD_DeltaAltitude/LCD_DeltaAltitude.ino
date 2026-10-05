@@ -60,7 +60,7 @@ Distributed as-is; no warranty is given.
 #include <LiquidCrystal.h>
 
 //Global sensor object
-BME280 mySensor;
+SparkFunBME280I2C mySensor;
 uint8_t buttonGroundPin = A0;
 uint8_t buttonSensePin = A2;
 
@@ -78,17 +78,8 @@ void setup()
 	digitalWrite( buttonGroundPin, 0 );
 	
 	//***Driver settings********************************//
-	//commInterface can be I2C_MODE or SPI_MODE
-	//specify chipSelectPin using arduino pin names
-	//specify I2C address.  Can be 0x77(default) or 0x76
-	
-	//For I2C, enable the following and disable the SPI section
-	mySensor.settings.commInterface = I2C_MODE;
-	mySensor.settings.I2CAddress = 0x77;
-	
-	//For SPI enable the following and dissable the I2C section
-	//mySensor.settings.commInterface = SPI_MODE;
-	//mySensor.settings.chipSelectPin = 10;
+	//The I2C address is passed to .begin(). Can be 0x77(default) or 0x76
+	//For SPI, use the SparkFunBME280SPI class and pass the chip select pin to .begin()
 
 
 	//***Operation settings*****************************//
@@ -135,10 +126,12 @@ void setup()
 	
 	Serial.begin(57600);
 	Serial.print("Program Started\n");
-	Serial.print("Starting BME280... result of .begin(): 0x");
+	Wire.begin();
+	Serial.print("Starting BME280... chip ID: 0x");
 	//Calling .begin() causes the settings to be loaded
 	delay(10);//Needs > 2 ms to start up
-	Serial.println(mySensor.begin(), HEX);
+	mySensor.begin(0x77);
+	Serial.println(mySensor.chipID(), HEX);
 
 	Serial.println();
 	

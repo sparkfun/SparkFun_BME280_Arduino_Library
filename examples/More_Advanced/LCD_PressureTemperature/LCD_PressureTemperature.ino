@@ -58,7 +58,7 @@ Distributed as-is; no warranty is given.
 #include "SPI.h"
 
 //Global sensor object
-BME280 mySensor;
+SparkFunBME280I2C mySensor;
 
 LiquidCrystal lcd(7,6,5,4,3,2);
 
@@ -68,17 +68,8 @@ void setup()
     lcd.clear();
 
 	//***Driver settings********************************//
-	//commInterface can be I2C_MODE or SPI_MODE
-	//specify chipSelectPin using arduino pin names
-	//specify I2C address.  Can be 0x77(default) or 0x76
-	
-	//For I2C, enable the following and disable the SPI section
-	mySensor.settings.commInterface = I2C_MODE;
-	mySensor.settings.I2CAddress = 0x77;
-	
-	//For SPI enable the following and dissable the I2C section
-	//mySensor.settings.commInterface = SPI_MODE;
-	//mySensor.settings.chipSelectPin = 10;
+	//The I2C address is passed to .begin(). Can be 0x77(default) or 0x76
+	//For SPI, use the SparkFunBME280SPI class and pass the chip select pin to .begin()
 
 
 	//***Operation settings*****************************//
@@ -125,47 +116,14 @@ void setup()
 	
 	Serial.begin(57600);
 	Serial.print("Program Started\n");
-	Serial.print("Starting BME280... result of .begin(): 0x");
+	Wire.begin();
+	Serial.print("Starting BME280... chip ID: 0x");
 	
 	//Calling .begin() causes the settings to be loaded
-	Serial.println(mySensor.begin(), HEX);
+	mySensor.begin(0x77);
+	Serial.println(mySensor.chipID(), HEX);
 	delay(10);  //Use delay if reading directly after .begin is called.  BME280 requires 2ms to start up.
 
-	Serial.print("Displaying ID, reset and ctrl regs\n");
-	
-	Serial.print("ID(0xD0): 0x");
-	Serial.println(mySensor.readRegister(BME280_CHIP_ID_REG), HEX);
-	Serial.print("Reset register(0xE0): 0x");
-	Serial.println(mySensor.readRegister(BME280_RST_REG), HEX);
-	Serial.print("ctrl_meas(0xF4): 0x");
-	Serial.println(mySensor.readRegister(BME280_CTRL_MEAS_REG), HEX);
-	Serial.print("ctrl_hum(0xF2): 0x");
-	Serial.println(mySensor.readRegister(BME280_CTRL_HUMIDITY_REG), HEX);
-
-	Serial.print("\n\n");
-
-	Serial.print("Displaying all regs\n");
-	uint8_t memCounter = 0x80;
-	uint8_t tempReadData;
-	for(int rowi = 8; rowi < 16; rowi++ )
-	{
-		Serial.print("0x");
-		Serial.print(rowi, HEX);
-		Serial.print("0:");
-		for(int coli = 0; coli < 16; coli++ )
-		{
-			tempReadData = mySensor.readRegister(memCounter);
-			Serial.print((tempReadData >> 4) & 0x0F, HEX);//Print first hex nibble
-			Serial.print(tempReadData & 0x0F, HEX);//Print second hex nibble
-			Serial.print(" ");
-			memCounter++;
-		}
-		Serial.print("\n");
-	}
-	
-	
-	Serial.print("\n\n");
-	
 	Serial.print("Displaying concatenated calibration words\n");
 	Serial.print("dig_T1, uint16: ");
 	Serial.println(mySensor.calibration.dig_T1);

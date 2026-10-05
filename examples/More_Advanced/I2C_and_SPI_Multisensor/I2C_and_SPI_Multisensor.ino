@@ -33,15 +33,13 @@ Distributed as-is; no warranty is given.
 #include "SPI.h"
 
 //Global sensor object
-BME280 mySensorA;
-BME280 mySensorB;
+SparkFunBME280I2C mySensorA;
+SparkFunBME280SPI mySensorB;
 
 void setup()
 {
 	//***Set up sensor 'A'******************************//
-	//commInterface can be I2C_MODE or SPI_MODE
-	mySensorA.settings.commInterface = I2C_MODE;
-	mySensorA.settings.I2CAddress = 0x77;
+	//Sensor 'A' uses I2C - the address (0x77 or 0x76) is passed to .begin()
 	mySensorA.settings.runMode = 3; //  3, Normal mode
 	mySensorA.settings.tStandby = 0; //  0, 0.5ms
 	mySensorA.settings.filter = 0; //  0, filter off
@@ -62,11 +60,7 @@ void setup()
 	
 	
 	//***Set up sensor 'B'******************************//
-	//commInterface can be I2C_MODE or SPI_MODE
-	//specify chipSelectPin using arduino pin names
-	//specify I2C address.  Can be 0x77(default) or 0x76
-	mySensorB.settings.commInterface = SPI_MODE;
-	mySensorB.settings.chipSelectPin = 10;
+	//Sensor 'B' uses SPI - the chip select pin is passed to .begin()
 	mySensorB.settings.runMode = 3; //  3, Normal mode
 	mySensorB.settings.tStandby = 0; //  0, 0.5ms
 	mySensorB.settings.filter = 0; //  0, filter off
@@ -88,13 +82,16 @@ void setup()
 	//***Initialize the things**************************//
 	Serial.begin(57600);
 	Serial.print("Program Started\n");
-	Serial.println("Starting BME280s... result of .begin():");
+	Wire.begin();
+	Serial.println("Starting BME280s... chip ID:");
 	delay(10);  //Make sure sensor had enough time to turn on. BME280 requires 2ms to start up.
 	//Calling .begin() causes the settings to be loaded
 	Serial.print("Sensor A: 0x");
-	Serial.println(mySensorA.begin(), HEX);
+	mySensorA.begin(0x77);
+	Serial.println(mySensorA.chipID(), HEX);
 	Serial.print("Sensor B: 0x");
-	Serial.println(mySensorB.begin(), HEX);
+	mySensorB.begin(10);
+	Serial.println(mySensorB.chipID(), HEX);
 
 
 }

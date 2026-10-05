@@ -24,14 +24,14 @@
 #include <SPI.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor;
+SparkFunBME280SPI mySensor;
 
 void setup()
 {
   Serial.begin(9600);
   Serial.println("Reading basic values from BME280");
 
-  if (mySensor.beginSPI(10) == false) //Begin communication over SPI. Use pin 10 as CS.
+  if (mySensor.begin(10) == false) //Begin communication over SPI. Use pin 10 as CS.
   {
     Serial.println("The sensor did not respond. Please check wiring.");
     while(1); //Freeze

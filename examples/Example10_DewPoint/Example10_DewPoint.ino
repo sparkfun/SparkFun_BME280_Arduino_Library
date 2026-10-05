@@ -21,15 +21,16 @@
 #include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor;
+SparkFunBME280I2C mySensor;
 
 void setup()
 {
   Serial.begin(115200);
   Serial.println("Example showing dewpoint calculation");
 
-  mySensor.setI2CAddress(0x76); //Connect to a second sensor
-  if (mySensor.beginI2C() == false) Serial.println("Sensor connect failed");
+  Wire.begin();
+
+  if (mySensor.begin(0x76) == false) Serial.println("Sensor connect failed");
 }
 
 void loop()

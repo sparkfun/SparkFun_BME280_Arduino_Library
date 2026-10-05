@@ -14,7 +14,7 @@
 #include <Wire.h>
 
 #include "SparkFunBME280.h"
-BME280 mySensor;
+SparkFunBME280I2C mySensor;
 
 void setup()
 {
@@ -24,7 +24,7 @@ void setup()
   Wire.begin();
   Wire.setClock(400000); //Increase to fast I2C speed!
 
-  mySensor.beginI2C();
+  mySensor.begin();
 
   mySensor.setMode(MODE_SLEEP); //Sleep for now
 }
